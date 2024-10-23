@@ -1,14 +1,14 @@
 import axios, { AxiosError } from 'axios'
 import { FanfulSdkOptions } from '@typings/global'
 
-const envconfig: Record<FanfulSdkOptions['mode'], string> = {
+const envconfig: Record<NonNullable<FanfulSdkOptions['mode']>, string> = {
   test: 'https://phoenix-fanful-2d74e42e73ee.herokuapp.com',
   production: 'https://fanful-backend-33d52a64526c.herokuapp.com'
 }
 
 export const createNetwork = (params: FanfulSdkOptions) => {
   // Set config defaults when creating the instance
-  const network = axios.create({ baseURL: `${envconfig[params.mode]}/api/v1` })
+  const network = axios.create({ baseURL: `${envconfig[params.mode || 'test']}/api/v1` })
 
   // Add a request interceptor
   network.interceptors.request.use(

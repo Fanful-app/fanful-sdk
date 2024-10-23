@@ -62,6 +62,7 @@
     "@semantic-release/github": "^8.0.7",
     "@semantic-release/npm": "^9.0.2",
     "@semantic-release/release-notes-generator": "^10.0.3",
+    "@types/jest": "^29.5.14",
     "@types/node": "^22.7.9",
     "eslint": "^8.33.0",
     "eslint-plugin-jest": "^27.2.1",
@@ -74,10 +75,12 @@
     "lockfile-lint": "^4.10.0",
     "open-cli": "^7.1.0",
     "prettier": "^2.8.3",
+    "ts-jest": "^29.2.5",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.6.3"
   },
   "jest": {
+    "preset": "ts-jest",
     "testEnvironment": "node",
     "verbose": true,
     "collectCoverage": true,
@@ -97,8 +100,12 @@
       "src/**/*.{js,ts}"
     ],
     "testMatch": [
-      "**/*.test.js"
-    ]
+      "**/*.test.{js,ts}"
+    ],
+    "moduleNameMapper": {
+      "^@app/(.*)$": "<rootDir>/src/$1",
+      "^@typings/(.*)$": "<rootDir>/typings/$1"
+    }
   },
   "lint-staged": {
     "**/*.{js,json}": [
