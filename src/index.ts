@@ -1,6 +1,7 @@
 import { AxiosInstance } from 'axios'
 
 import { Country } from '@typings/user'
+import { URLS } from '@app/helper/urls'
 import { createNetwork } from '@app/helper/network'
 import { PostFilterInterface, PostInterface } from '@typings/post'
 import {
@@ -27,7 +28,7 @@ export default class FanfulSdk {
   ): Promise<PaginateResult<PostInterface>> => {
     const { data } = await FanfulSdk.network.get<
       BasicResponseInterface<PaginateResult<PostInterface>>
-    >('/posts', { params })
+    >(URLS.getPosts, { params })
 
     return data.payload
   }
@@ -39,7 +40,7 @@ export default class FanfulSdk {
    */
   public getPost = async (post_id: string): Promise<PostInterface> => {
     const { data } = await FanfulSdk.network.get<BasicResponseInterface<PostInterface>>(
-      `/posts/${post_id}`
+      URLS.getPost(post_id)
     )
 
     return data.payload
@@ -50,7 +51,9 @@ export default class FanfulSdk {
    * @returns {Promise<Country[]>} Returns the list of countries
    */
   public getCountries = async (): Promise<Country[]> => {
-    const { data } = await FanfulSdk.network.get<BasicResponseInterface<Country[]>>('/country')
+    const { data } = await FanfulSdk.network.get<BasicResponseInterface<Country[]>>(
+      URLS.getCountries
+    )
 
     return data.payload
   }
