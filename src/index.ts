@@ -1,6 +1,6 @@
 import { AxiosInstance } from 'axios'
 
-import { Country } from '@typings/user'
+import { Country, UserReferralInterface } from '@typings/user'
 import { URLS } from '@app/helper/urls'
 import { createNetwork } from '@app/helper/network'
 import { PostFilterInterface, PostInterface } from '@typings/post'
@@ -54,6 +54,20 @@ export default class FanfulSdk {
     const { data } = await FanfulSdk.network.get<BasicResponseInterface<Country[]>>(
       URLS.getCountries
     )
+
+    return data.payload
+  }
+
+  /**
+   * @method getReferrals
+   * @returns {Promise<PaginateResult<UserReferralInterface>>} Returns the list of referrals
+   */
+  public getReferrals = async (
+    params: PaginateParams
+  ): Promise<PaginateResult<UserReferralInterface>> => {
+    const { data } = await FanfulSdk.network.get<
+      BasicResponseInterface<PaginateResult<UserReferralInterface>>
+    >(URLS.getReferrals, { params })
 
     return data.payload
   }
