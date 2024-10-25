@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios'
 import FanfulSdk from '../src/index'
 import { URLS } from '../src/helper/urls'
-import { BasicResponseInterface, PaginateParams, PaginateResult } from '../typings/global'
+import { BasicResponseInterface, FanfulSdkMode, PaginateParams } from '../typings/global'
 import { Country } from '../typings/user'
 import { PostFilterInterface } from '../typings/post'
 import { PostmockData, PostsmockData } from '../src/mock/post'
@@ -11,7 +11,7 @@ const mockAxios = axios as jest.Mocked<typeof axios>
 
 describe('FanfulSdk', () => {
   let fanfulSdk: FanfulSdk
-  const options = { mode: 'test', secrete_key: 'test_key', client_id: 'fanful-client_id' }
+  const options = { mode: FanfulSdkMode, secrete_key: 'test_key', client_id: 'fanful-client_id' }
 
   beforeEach(() => {
     fanfulSdk = new FanfulSdk(options)
@@ -25,7 +25,7 @@ describe('FanfulSdk', () => {
     it('should fetch posts with correct params', async () => {
       mockAxios.get.mockResolvedValue({ data: PostsmockData })
 
-      const params: PaginateParams | PostFilterInterface = { page: 1, filter_type: 'Recent' }
+      const params: PaginateParams & PostFilterInterface = { page: 1, filter_type: 'Recent' }
       const response = await fanfulSdk.getPosts(params)
 
       expect(mockAxios.get).toHaveBeenCalledWith(URLS.getPosts, { params })

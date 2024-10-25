@@ -30,6 +30,11 @@ export type RecursivePartial<T> = {
   [P in keyof T]?: RecursivePartial<T[P]>
 }
 
+export enum FanfulSdkMode {
+  TEST = 'test',
+  PRODUCTION = 'production',
+}
+
 export type FanfulSdkOptions = {
   client_id: string
   secrete_key: string
