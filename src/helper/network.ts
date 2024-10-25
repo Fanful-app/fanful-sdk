@@ -9,11 +9,14 @@ const envconfig: Record<NonNullable<FanfulSdkOptions['mode']>, string> = {
 export const createNetwork = (params: FanfulSdkOptions) => {
   // Set config defaults when creating the instance
   const network = axios.create({ baseURL: `${envconfig[params.mode || 'test']}/api/v1` })
-
+  // documentation
+  // quantifying
+  // hieracy in spill quantification process
+  
   // Add a request interceptor
   network.interceptors.request.use(
     async (config) => {
-      config.headers.set('x-fanful-client-id', params.secrete_key)
+      config.headers.set('x-fanful-client-id', params.client_id)
       config.headers.set('x-fanful-secrete-key', params.secrete_key)
       return config
     },

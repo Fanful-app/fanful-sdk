@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios'
 import FanfulSdk from '../src/index'
 import { URLS } from '../src/helper/urls'
-import { BasicResponseInterface, PaginateResult } from '../typings/global'
+import { BasicResponseInterface, PaginateParams, PaginateResult } from '../typings/global'
 import { Country } from '../typings/user'
 import { PostmockData, PostsmockData } from '../src/mock/post'
 
@@ -24,7 +24,7 @@ describe('FanfulSdk', () => {
     it('should fetch posts with correct params', async () => {
       mockAxios.get.mockResolvedValue({ data: PostsmockData })
 
-      const params = { page: 1, limit: 10 }
+      const params: PaginateParams = { page: 1 }
       const response = await fanfulSdk.getPosts(params)
 
       expect(mockAxios.get).toHaveBeenCalledWith(URLS.getPosts, { params })
@@ -86,7 +86,7 @@ describe('FanfulSdk', () => {
 
       mockAxios.get.mockResolvedValue({ data: mockData })
 
-      const params = { page: 1, limit: 10 }
+      const params: PaginateParams = { page: 1 }
       const response = await fanfulSdk.getReferrals(params)
 
       expect(mockAxios.get).toHaveBeenCalledWith(URLS.getReferrals, { params })

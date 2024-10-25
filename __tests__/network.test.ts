@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosInstance } from 'axios'
+import { createNetwork } from '../src/helper/network'
 import { FanfulSdkOptions } from '../typings/global'
 import { beforeEach } from 'node:test'
-import { createNetwork } from '../src/helper/network'
 
 jest.mock('axios')
 
@@ -13,9 +13,9 @@ describe('createNetwork', () => {
 
   beforeEach(() => {
     fanfulSdkOptions = {
-      mode: 'test',
+      client_id: 'fanful-client_id',
       secrete_key: 'test_key',
-      client_id: 'fanful-client_id'
+      mode: 'test'
     }
     mockedAxios.create.mockReturnValue(mockedAxios)
   })
