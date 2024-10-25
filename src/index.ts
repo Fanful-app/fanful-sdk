@@ -68,6 +68,7 @@ export default class FanfulSdk {
 
   /**
    * @method getReferrals
+   * @param {PaginateParams} params
    * @returns {Promise<PaginateResult<UserReferralInterface>>} Returns the list of referrals
    */
   public getReferrals = async (
@@ -93,10 +94,10 @@ export default class FanfulSdk {
     return data.payload
   }
 
-  /**
-   * @method getProfileFollowersOrFollowing
-   * @returns {Promise<PaginateResult<UserProfileFollowersOrFollowingInterface>>} Returns profile followers or following
-   */
+  // /**
+  //  * @method getProfileFollowersOrFollowing
+  //  * @returns {Promise<PaginateResult<UserProfileFollowersOrFollowingInterface>>} Returns profile followers or following
+  //  */
   // public getProfileFollowersOrFollowing = async (
   //   params: PaginateParams & ProfileFollowersOrFollowingQueryParamInterface
   // ) => {
@@ -124,6 +125,7 @@ export default class FanfulSdk {
 
   /**
    * @method getComment
+   * @param {Pick<CommentInterface, 'post_id'> & PaginateParams} params
    * @returns {Promise<PaginateResult<CommentInterface>>} Returns the list of comment
    */
   public getComment = async (params: Pick<CommentInterface, 'post_id'> & PaginateParams) => {
@@ -136,6 +138,7 @@ export default class FanfulSdk {
 
   /**
    * @method getNotifications
+   * @param {PaginateParams} params
    * @returns {Promise<PaginateResult<NotificationInterface>>} Returns a list of notifications
    */
   public getNotifications = async (params?: PaginateParams) => {
@@ -148,6 +151,8 @@ export default class FanfulSdk {
 
   /**
    * @method getRaffles
+   * @param {PaginateParams} params
+   * @param {RaffleFilterInterface} filter_type
    * @returns {Promise<PaginateResult<RaffleEntryInterface>>} Returns a list of all raffles
    */
   public getRaffles = async ({
@@ -165,6 +170,7 @@ export default class FanfulSdk {
 
   /**
    * @method getRankPoints
+   * @param {PaginateParams} params
    * @returns {Promise<PaginateResult<{user: UserRankInterface leader_board: PaginateResult<UserRankInterface>}>>} Returns a list of rank points
    */
   public getRankPoints = async (params?: PaginateParams) => {
@@ -180,6 +186,7 @@ export default class FanfulSdk {
 
   /**
    * @method getRewards
+   * @param {PaginateParams} params
    * @returns {Promise<PaginateResult<RewardPointInterface>>} Returns a list of rewards
    */
   public getRewards = async (params: PaginateParams) => {
@@ -204,6 +211,7 @@ export default class FanfulSdk {
 
   /**
    * @method searchShops
+   * @param {string} search
    * @returns {Promise<ShopResponse>} Returns a list of searched shops
    */
   public searchShops = async ({
