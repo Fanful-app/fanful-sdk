@@ -1,11 +1,11 @@
-import axios, { AxiosError } from 'axios'
+import axios, { AxiosError, AxiosInstance } from 'axios'
 import { FanfulSdkOptions } from '../typings/global'
 import { beforeEach } from 'node:test'
 import { createNetwork } from '../src/helper/network'
 
 jest.mock('axios')
 
-const mocked_axios = axios as jest.Mocked<typeof axios>
+const mockedAxios = axios as jest.Mocked<typeof axios>
 const baseURL = 'https://phoenix-fanful-2d74e42e73ee.herokuapp.com'
 
 describe('createNetwork', () => {
@@ -17,35 +17,42 @@ describe('createNetwork', () => {
       secrete_key: 'test_key',
       client_id: 'fanful-client_id'
     }
-    mocked_axios.create.mockReturnThis()
+    mockedAxios.create.mockReturnValue(mockedAxios)
   })
 
   it('should set correct headers in request', async () => {
-    const network = createNetwork(fanfulSdkOptions)
-    mocked_axios.interceptors.request.use((config) => config)
+    const network = createNetwork(fanfulSdkOptions) as AxiosInstance
 
-    expect(mocked_axios.interceptors.request.use).toHaveBeenCalledWith(`${baseURL}/api/v1`, {
-      'x-fanful-client-id': 'client_id',
-      'x-fanful-secrete-key': 'secrete_key'
+    expect(mockedAxios.create).toHaveBeenCalledWith({
+      baseURL,
+      headers: {
+        'x-fanful-client-id': fanfulSdkOptions.client_id,
+        'x-fanful-secrete-key': fanfulSdkOptions.secrete_key
+      }
     })
 
-    await network.get('/test-endpoint')
-    expect(mocked_axios.interceptors.request.use).toHaveBeenCalled()
-  })
-
-  it('should handle successful response', async () => {
-    const network = createNetwork(fanfulSdkOptions)
-    mocked_axios.interceptors.request.use((response) => response)
-    mocked_axios.get.mockResolvedValue({
-      data: { payload: [], metadata: 'string', status: 200, message: 'string' }
-    })
+    mockedAxios.get.mockResolvedValue({ data: { message: 'success' } })
     const response = await network.get('/test-endpoint')
     expect(response.data).toEqual({ message: 'success' })
   })
 
+  it('should handle successful response', async () => {
+    const network = createNetwork(fanfulSdkOptions)
+    mockedAxios.get.mockResolvedValue({
+      data: { payload: [], metadata: 'string', status: 200, message: 'success' }
+    })
+    const response = await network.get('/test-endpoint')
+    expect(response.data).toEqual({
+      payload: [],
+      metadata: 'string',
+      status: 200,
+      message: 'success'
+    })
+  })
+
   it('should handle errors and reject with error response', async () => {
     const network = createNetwork(fanfulSdkOptions)
-    const error: AxiosError = {
+    const error = {
       isAxiosError: true,
       response: {
         status: 400,
@@ -53,10 +60,16 @@ describe('createNetwork', () => {
       }
     } as AxiosError
 
+    mockedAxios.get.mockRejectedValue(error)
+
     try {
       await network.get('/test-endpoint')
     } catch (err) {
-      expect(err).toEqual({ status: 500, message: 'error', error: 'strings of errors' })
+      expect((err as AxiosError).response?.data).toEqual({
+        status: 500,
+        message: 'error',
+        error: 'strings of errors'
+      })
     }
   })
 })
