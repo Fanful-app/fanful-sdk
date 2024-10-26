@@ -3,7 +3,7 @@ import FanfulSdk from '../src/index'
 import { URLS } from '../src/helper/urls'
 import { BasicResponseInterface, FanfulSdkMode, PaginateParams } from '../typings/global'
 import { Country } from '../typings/user'
-import { PostFilterInterface } from '../typings/post'
+import { FilterType, PostFilterInterface } from '../typings/post'
 import { PostmockData, PostsmockData } from '../src/mock/post'
 
 jest.mock('axios')
@@ -39,7 +39,7 @@ describe('FanfulSdk', () => {
     it('should handle API errors when fetching posts', async () => {
       mockAxios.get.mockRejectedValue(new Error('Network Error'))
 
-      const params = { page: 1, filter_type: 'Recent' }
+      const params = { page: 1, filter_type: FilterType.Recent }
 
       await expect(fanfulSdk.getPosts(params)).rejects.toThrow('Network Error')
     })
@@ -146,7 +146,7 @@ describe('FanfulSdk', () => {
 
       mockAxios.get.mockResolvedValue({ data: mockData })
 
-      const response = await fanfulSdk.getComment({ post_id: postId, page: 1, limit: 10 })
+      const response = await fanfulSdk.getComment({ post_id: postId, page: 1 })
 
       expect(mockAxios.get).toHaveBeenCalledWith(URLS.getComment, {
         params: { post_id: postId, page: 1 }
