@@ -11,7 +11,11 @@ const mockAxios = axios as jest.Mocked<typeof axios>
 
 describe('FanfulSdk', () => {
   let fanfulSdk: FanfulSdk
-  const options = { mode: FanfulSdkMode, secrete_key: 'test_key', client_id: 'fanful-client_id' }
+  const options = {
+    mode: FanfulSdkMode.TEST,
+    secrete_key: 'test_key',
+    client_id: 'fanful-client_id'
+  }
 
   beforeEach(() => {
     fanfulSdk = new FanfulSdk(options)
@@ -35,7 +39,7 @@ describe('FanfulSdk', () => {
     it('should handle API errors when fetching posts', async () => {
       mockAxios.get.mockRejectedValue(new Error('Network Error'))
 
-      const params = { page: 1, limit: 10 }
+      const params = { page: 1, filter_type: 'Recent' }
 
       await expect(fanfulSdk.getPosts(params)).rejects.toThrow('Network Error')
     })
@@ -145,7 +149,7 @@ describe('FanfulSdk', () => {
       const response = await fanfulSdk.getComment({ post_id: postId, page: 1, limit: 10 })
 
       expect(mockAxios.get).toHaveBeenCalledWith(URLS.getComment, {
-        params: { post_id: postId, page: 1, limit: 10 }
+        params: { post_id: postId, page: 1 }
       })
       expect(response).toEqual(mockData.payload)
     })
