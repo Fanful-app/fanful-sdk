@@ -23,16 +23,16 @@ import { ShopInterface, ShopResponse } from '@typings/shop'
 
 export default class FanfulSdk {
   private static network: AxiosInstance
-  public static test_network: AxiosInstance
+  // public static test_network: AxiosInstance
 
-  public static initSDK(options: FanfulSdkOptions) {
-    this.network = this.test_network
-    FanfulSdk.test_network = createNetwork(options)
-  }
+  // public static initSDK(options: FanfulSdkOptions) {
+  //   this.network = this.test_network
+  //   FanfulSdk.test_network = createNetwork(options)
+  // }
 
   constructor(options: FanfulSdkOptions) {
     FanfulSdk.network = createNetwork(options)
-    FanfulSdk.initSDK(options)
+    // FanfulSdk.initSDK(options)
   }
 
   /**
@@ -95,7 +95,7 @@ export default class FanfulSdk {
    * @param {string} userId - user id to search for a profile
    * @returns {Promise<UserSessionInterface['user']>} Returns a user profile details
    */
-  public getUserProfile = async (userId: string) => {
+  public getUserProfile = async (userId: string): Promise<UserSessionInterface['user']> => {
     const { data } = await FanfulSdk.network.get<
       BasicResponseInterface<UserSessionInterface['user']>
     >(URLS.getUserProfile(userId))
@@ -112,21 +112,28 @@ export default class FanfulSdk {
   ): Promise<PaginateResult<UserProfileFollowersOrFollowingInterface>> => {
     const { data } = await FanfulSdk.network.get<
       BasicResponseInterface<PaginateResult<UserProfileFollowersOrFollowingInterface>>
-    >(URLS.getProfileFollowersOrFollowing(params), { params:{page: params.page} })
+    >(URLS.getProfileFollowersOrFollowing(params), { params: { page: params.page } })
 
     return data.payload
   }
 
   /**
    * @method getFanRewardPoints
-   * @returns {Promise<PaginateResult<{daily: RewardPointInterface[] continues: RewardPointInterface[]}>>} Returns the list of fan reward points
+   * @returns {Promise<PaginateResult<{ daily: PaginateResult<RewardPointInterface[]>; continues: PaginateResult<RewardPointInterface[]> }>>} Returns the list of fan reward points
    */
-  public getFanRewardPoints = async () => {
+  public getFanRewardPoints = async (): Promise<
+    PaginateResult<{
+      daily: PaginateResult<RewardPointInterface[]>
+      continues: PaginateResult<RewardPointInterface[]>
+    }>
+  > => {
     const { data } = await FanfulSdk.network.get<
-      BasicResponseInterface<{
-        daily: RewardPointInterface[]
-        continues: RewardPointInterface[]
-      }>
+      BasicResponseInterface<
+        PaginateResult<{
+          daily: PaginateResult<RewardPointInterface[]>
+          continues: PaginateResult<RewardPointInterface[]>
+        }>
+      >
     >(URLS.getFanRewardPoints)
 
     return data.payload
@@ -137,7 +144,9 @@ export default class FanfulSdk {
    * @param {Pick<CommentInterface, 'post_id'> & PaginateParams} params
    * @returns {Promise<PaginateResult<CommentInterface>>} Returns the list of comment
    */
-  public getComment = async (params: Pick<CommentInterface, 'post_id'> & PaginateParams) => {
+  public getComment = async (
+    params: Pick<CommentInterface, 'post_id'> & PaginateParams
+  ): Promise<PaginateResult<CommentInterface>> => {
     const { data } = await FanfulSdk.network.get<
       BasicResponseInterface<PaginateResult<CommentInterface>>
     >(URLS.getComment, { params })
@@ -150,7 +159,9 @@ export default class FanfulSdk {
    * @param {PaginateParams} params
    * @returns {Promise<PaginateResult<NotificationInterface>>} Returns a list of notifications
    */
-  public getNotifications = async (params?: PaginateParams) => {
+  public getNotifications = async (
+    params?: PaginateParams
+  ): Promise<PaginateResult<NotificationInterface>> => {
     const { data } = await FanfulSdk.network.get<
       BasicResponseInterface<PaginateResult<NotificationInterface>>
     >(URLS.getNotifications, { params })
@@ -167,7 +178,7 @@ export default class FanfulSdk {
   public getRaffles = async ({
     filter_type,
     ...params
-  }: PaginateParams & RaffleFilterInterface) => {
+  }: PaginateParams & RaffleFilterInterface): Promise<PaginateResult<RaffleEntryInterface>> => {
     const { data } = await FanfulSdk.network.get<
       BasicResponseInterface<PaginateResult<RaffleEntryInterface>>
     >(URLS.getRaffles(filter_type), {
@@ -182,12 +193,15 @@ export default class FanfulSdk {
    * @param {PaginateParams} params
    * @returns {Promise<PaginateResult<{user: UserRankInterface leader_board: PaginateResult<UserRankInterface>}>>} Returns a list of rank points
    */
-  public getRankPoints = async (params?: PaginateParams) => {
+  public getRankPoints = async (
+    params?: PaginateParams
+  ): Promise<
+    PaginateResult<{ user: UserRankInterface; leader_board: PaginateResult<UserRankInterface> }>
+  > => {
     const { data } = await FanfulSdk.network.get<
-      BasicResponseInterface<{
-        user: UserRankInterface
-        leader_board: PaginateResult<UserRankInterface>
-      }>
+      BasicResponseInterface<
+        PaginateResult<{ user: UserRankInterface; leader_board: PaginateResult<UserRankInterface> }>
+      >
     >(URLS.getRankPoints, { params })
 
     return data.payload
@@ -198,7 +212,9 @@ export default class FanfulSdk {
    * @param {PaginateParams} params
    * @returns {Promise<PaginateResult<RewardPointInterface>>} Returns a list of rewards
    */
-  public getRewards = async (params: PaginateParams) => {
+  public getRewards = async (
+    params: PaginateParams
+  ): Promise<PaginateResult<RewardPointInterface>> => {
     const { data } = await FanfulSdk.network.get<
       BasicResponseInterface<PaginateResult<RewardPointInterface>>
     >(URLS.getRewards, { params })
@@ -210,7 +226,7 @@ export default class FanfulSdk {
    * @method getShops
    * @returns {Promise<ShopInterface>} Returns a list of shops
    */
-  public getShops = async () => {
+  public getShops = async (): Promise<ShopInterface> => {
     const { data } = await FanfulSdk.network.get<BasicResponseInterface<ShopInterface>>(
       URLS.getShops
     )
@@ -226,7 +242,7 @@ export default class FanfulSdk {
   public searchShops = async ({
     search,
     ...params
-  }: Partial<Omit<ShopResponse, 'content'>> & { search: string }) => {
+  }: Partial<Omit<ShopResponse, 'content'>> & { search: string }): Promise<ShopResponse> => {
     const { data } = await FanfulSdk.network.get<ShopResponse>(URLS.searchShops(search), {
       params
     })
@@ -240,7 +256,7 @@ export default class FanfulSdk {
    */
   public getThread = async (
     params?: Pick<CommentInterface, 'post_id' | 'thread_id'> & PaginateParams
-  ) => {
+  ): Promise<PaginateResult<CommentInterface>> => {
     const { data } = await FanfulSdk.network.get<
       BasicResponseInterface<PaginateResult<CommentInterface>>
     >(URLS.getThread, { params })

@@ -49,7 +49,7 @@ describe('FanfulSdk', () => {
     it('should fetch posts with correct params', async () => {
       mockAxios.get.mockResolvedValue({ data: PostsmockData })
       
-      jest.spyOn(FanfulSdk.test_network, 'get').mockResolvedValueOnce(PostsmockData)
+      // jest.spyOn(FanfulSdk.test_network, 'get').mockResolvedValueOnce(PostsmockData)
 
       const params: PaginateParams & PostFilterInterface = { page: 1, filter_type: 'Recent' }
       const response = await fanfulSdk.getPosts(params)
