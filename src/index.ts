@@ -2,6 +2,8 @@ import { AxiosInstance } from 'axios'
 
 import {
   Country,
+  ProfileFollowersOrFollowingQueryParamInterface,
+  UserProfileFollowersOrFollowingInterface,
   UserRankInterface,
   UserReferralInterface,
   UserSessionInterface
@@ -101,19 +103,19 @@ export default class FanfulSdk {
     return data.payload
   }
 
-  // /**
-  //  * @method getProfileFollowersOrFollowing
-  //  * @returns {Promise<PaginateResult<UserProfileFollowersOrFollowingInterface>>} Returns profile followers or following
-  //  */
-  // public getProfileFollowersOrFollowing = async (
-  //   params: PaginateParams & ProfileFollowersOrFollowingQueryParamInterface
-  // ) => {
-  //   const { data } = await FanfulSdk.network.get<
-  //     BasicResponseInterface<PaginateResult<UserProfileFollowersOrFollowingInterface>>
-  //   >(URLS.getProfileFollowersOrFollowing(params), { params: pick(params, 'page') })
+  /**
+   * @method getProfileFollowersOrFollowing
+   * @returns {Promise<PaginateResult<UserProfileFollowersOrFollowingInterface>>} Returns profile followers or following
+   */
+  public getProfileFollowersOrFollowing = async (
+    params: PaginateParams & ProfileFollowersOrFollowingQueryParamInterface
+  ): Promise<PaginateResult<UserProfileFollowersOrFollowingInterface>> => {
+    const { data } = await FanfulSdk.network.get<
+      BasicResponseInterface<PaginateResult<UserProfileFollowersOrFollowingInterface>>
+    >(URLS.getProfileFollowersOrFollowing(params), { params:{page: params.page} })
 
-  //   return data.payload
-  // }
+    return data.payload
+  }
 
   /**
    * @method getFanRewardPoints
