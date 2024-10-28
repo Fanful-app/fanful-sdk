@@ -1,16 +1,35 @@
-import axios, { AxiosInstance } from 'axios'
+import axios, { AxiosError, AxiosInstance } from 'axios'
 import FanfulSdk from '../src/index'
 import { URLS } from '../src/helper/urls'
-import { BasicResponseInterface, FanfulSdkMode, PaginateParams } from '../typings/global'
-import { Country } from '../typings/user'
-import { FilterType, PostFilterInterface } from '../typings/post'
+import type { BasicResponseInterface, PaginateParams } from '../typings/global'
+import type { Country } from '../typings/user'
+import type { PostFilterInterface } from '../typings/post'
 import { PostmockData, PostsmockData } from '../src/mock/post'
+import { FanfulSdkMode, FilterType } from '../enums/index'
+import { createNetwork } from './network.test'
 
-jest.mock('axios')
+jest.mock('../src/helper/network', () => ({
+  __esModule: true,
+  default: jest.fn()
+}))
+
 const mockAxios = axios as jest.Mocked<typeof axios>
+// const mockAxiosInstance = axios.create() as jest.Mocked<AxiosInstance>
+// ;(createNetwork as jest.Mock).mockReturnValue(mockAxiosInstance)
 
 describe('FanfulSdk', () => {
   let fanfulSdk: FanfulSdk
+  mockAxios.interceptors.request.use(
+    async (config) => {
+      config.headers.set('x-fanful-client-id', 'params.client_id')
+      config.headers.set('x-fanful-secrete-key', 'params.secrete_key')
+      return config
+    },
+    (error: AxiosError) => {
+      reportError(error?.response?.data as Error)
+      return Promise.reject(error?.response?.data as Error)
+    }
+  )
   const options = {
     mode: FanfulSdkMode.TEST,
     secrete_key: 'test_key',
@@ -19,6 +38,7 @@ describe('FanfulSdk', () => {
 
   beforeEach(() => {
     fanfulSdk = new FanfulSdk(options)
+    console.log(fanfulSdk)
   })
 
   afterEach(() => {
@@ -28,6 +48,8 @@ describe('FanfulSdk', () => {
   describe('getPosts', () => {
     it('should fetch posts with correct params', async () => {
       mockAxios.get.mockResolvedValue({ data: PostsmockData })
+      
+      jest.spyOn(FanfulSdk.test_network, 'get').mockResolvedValueOnce(PostsmockData)
 
       const params: PaginateParams & PostFilterInterface = { page: 1, filter_type: 'Recent' }
       const response = await fanfulSdk.getPosts(params)

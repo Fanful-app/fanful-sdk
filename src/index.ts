@@ -21,9 +21,16 @@ import { ShopInterface, ShopResponse } from '@typings/shop'
 
 export default class FanfulSdk {
   private static network: AxiosInstance
+  public static test_network: AxiosInstance
+
+  public static initSDK(options: FanfulSdkOptions) {
+    this.network = this.test_network
+    FanfulSdk.test_network = createNetwork(options)
+  }
 
   constructor(options: FanfulSdkOptions) {
     FanfulSdk.network = createNetwork(options)
+    FanfulSdk.initSDK(options)
   }
 
   /**

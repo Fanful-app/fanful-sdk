@@ -2,11 +2,6 @@ import { UserInterface } from './user'
 
 type ImageAsset = {}
 
-export enum FilterType {
-  Recent = 'Recent',
-  Top = 'Top'
-}
-
 export interface PostFilterInterface extends Partial<Pick<PostInterface, 'post_type'>> {
   user_id?: string
   filter_type: 'Recent' | 'Top'
