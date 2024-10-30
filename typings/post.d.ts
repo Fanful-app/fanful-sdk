@@ -1,6 +1,8 @@
 import { UserInterface } from './user'
 
-type ImageAsset = {}
+type ImageAsset = {
+  [x: string]: string
+}
 
 export interface PostFilterInterface extends Partial<Pick<PostInterface, 'post_type'>> {
   user_id?: string

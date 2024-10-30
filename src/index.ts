@@ -1,25 +1,47 @@
 import { AxiosInstance } from 'axios'
 
 import {
+  BlockProfileInterface,
   Country,
+  FollowAndUnFollowProfileInterface,
+  ForgotPasswordInterface,
   ProfileFollowersOrFollowingQueryParamInterface,
+  ReportCommentInterface,
+  ReportInterface,
+  ResetPasswordInterface,
+  SignInUserInterface,
+  SignUpUserInterface,
+  UpdateProfileInterface,
+  UserInterface,
   UserProfileFollowersOrFollowingInterface,
   UserRankInterface,
   UserReferralInterface,
-  UserSessionInterface
+  UserSessionInterface,
+  VerifyUserOtpInterface
 } from '@typings/user'
 import { URLS } from '@app/helper/urls'
 import { createNetwork } from '@app/helper/network'
-import { CommentInterface, PostFilterInterface, PostInterface } from '@typings/post'
+import {
+  CommentInterface,
+  CreateCommentInterface,
+  CreatePostInterface,
+  PostFilterInterface,
+  PostInterface,
+  ReactOnCommentInterface,
+  ReactOnPostInterface
+} from '@typings/post'
 import {
   PaginateParams,
   PaginateResult,
   FanfulSdkOptions,
-  BasicResponseInterface
+  BasicResponseInterface,
+  RewardMetadata
 } from '@typings/global'
 import { RaffleEntryInterface, RaffleFilterInterface, RewardPointInterface } from '@typings/reward'
-import { NotificationInterface } from '@typings/notification'
+import { FcmTokenInterface, NotificationInterface } from '@typings/notification'
 import { ShopInterface, ShopResponse } from '@typings/shop'
+import { getAssetMeta } from './helper/getAssets'
+import { omit } from './helper/omit'
 
 export default class FanfulSdk {
   private static network: AxiosInstance
@@ -260,6 +282,471 @@ export default class FanfulSdk {
     const { data } = await FanfulSdk.network.get<
       BasicResponseInterface<PaginateResult<CommentInterface>>
     >(URLS.getThread, { params })
+
+    return data.payload
+  }
+
+  /**
+   * @method likeAndUnlikeComment
+   * @param {ReactOnCommentInterface} params
+   * @returns {Promise<RewardMetadata>} Like and Unlike a comment
+   */
+  public likeAndUnlikeComment = async (params: ReactOnCommentInterface) => {
+    const { data } = await FanfulSdk.network.put<BasicResponseInterface<RewardMetadata>>(
+      URLS.likeAndUnlikeComment(params)
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method createComment
+   * @param {CreateCommentInterface} params
+   * @returns {Promise<CommentInterface, RewardMetadata>} Create comment for a post
+   */
+  public createComment = async ({ post_id, ...payload }: CreateCommentInterface) => {
+    const { data } = await FanfulSdk.network.post<
+      BasicResponseInterface<CommentInterface, RewardMetadata>
+    >(URLS.createComment(post_id), payload)
+
+    return { metadata: data.metadata, payload: data.payload }
+  }
+
+  /**
+   * @method reportComment
+   * @param {ReportCommentInterface} payload
+   * @returns {Promise<any>} Report a comment
+   */
+  public reportComment = async (payload: Omit<ReportCommentInterface, 'post_id'>): Promise<any> => {
+    const { data } = await FanfulSdk.network.put<BasicResponseInterface>(
+      URLS.reportComment,
+      payload
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method likeAndUnlikeComment
+   * @param {ReactOnCommentInterface} params
+   * @returns {Promise<T>} Like and Unlike a comment
+   */
+  public deleteComment = async (params: Pick<ReactOnCommentInterface, 'id' | 'post_id'>) => {
+    const { data } = await FanfulSdk.network.delete<BasicResponseInterface>(
+      URLS.deleteComment(params)
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method seenNotification
+   * @param {Pick<NotificationInterface, 'id'>} params
+   * @returns {Promise<T>} Make or Mark a Notification as seen
+   */
+  public seenNotification = async ({ id }: Pick<NotificationInterface, 'id'>) => {
+    const { data } = await FanfulSdk.network.post<BasicResponseInterface>(URLS.seenNotification(id))
+
+    return data.payload
+  }
+
+  /**
+   * @method markAllNotification
+   * @returns {Promise<T>} Mark all Notification as seen
+   */
+  public markAllNotification = async () => {
+    const { data } = await FanfulSdk.network.post<BasicResponseInterface>(URLS.markAllNotification)
+
+    return data.payload
+  }
+
+  /**
+   * @method registerPushNotification
+   * @param {FcmTokenInterface} payload
+   * @returns {Promise<T>} Register Push Notification on device
+   */
+  public registerPushNotification = async (payload: FcmTokenInterface) => {
+    const { data } = await FanfulSdk.network.post<BasicResponseInterface>(
+      URLS.registerPushNotification,
+      payload
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method createPost
+   * @param {CreatePostInterface} payload
+   * @returns {Promise<PostInterface, RewardMetadata>} Create a Post
+   */
+  public createPost = async (payload: CreatePostInterface) => {
+    const form = new FormData()
+    form.append('caption', payload.caption)
+    form.append('media_type', payload.media_type)
+
+    payload.media_urls?.map((media) => {
+      //@ts-ignore
+      form.append('files', {
+        uri: media.url,
+        name: media.raw.fileName || media.media_key,
+        type: media.type === 'IMAGE' ? 'image/jpeg' : 'video/mp4'
+      })
+    })
+
+    const { data } = await FanfulSdk.network.post<
+      BasicResponseInterface<PostInterface, RewardMetadata>
+    >(URLS.createPost, form)
+
+    return { metadata: data.metadata, payload: data.payload }
+  }
+
+  /**
+   * @method likeAndUnlikePost
+   * @param {ReactOnPostInterface} payload
+   * @returns {Promise<RewardMetadata>} Like and Unlike a Post
+   */
+  public likeAndUnlikePost = async (payload: ReactOnPostInterface): Promise<RewardMetadata> => {
+    const { data } = await FanfulSdk.network.put<BasicResponseInterface<RewardMetadata>>(
+      URLS.likeAndUnlikePost(payload)
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method reportPost
+   * @param {ReportInterface} payload
+   * @returns {Promise<T>} Report a Post
+   */
+  public reportPost = async (payload: ReportInterface) => {
+    const { data } = await FanfulSdk.network.post<BasicResponseInterface>(URLS.reportPost, {
+      post_id: payload.id,
+      reason: payload.reason
+    })
+
+    return data.payload
+  }
+
+  /**
+   * @method deletePost
+   * @param {Pick<ReactOnPostInterface, 'id'>} payload
+   * @returns {Promise<T>} Delete a Post
+   */
+  public deletePost = async (payload: Pick<ReactOnPostInterface, 'id'>) => {
+    const { data } = await FanfulSdk.network.delete<BasicResponseInterface>(
+      URLS.deletePost(payload)
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method followAndUnFollow
+   * @param {FollowAndUnFollowProfileInterface} params
+   * @returns {Promise<RewardMetadata>} Follow or Unfollow a user
+   */
+  public followAndUnFollow = async (
+    params: FollowAndUnFollowProfileInterface
+  ): Promise<RewardMetadata> => {
+    const { data } = await FanfulSdk.network.put<BasicResponseInterface<RewardMetadata>>(
+      URLS.followAndUnFollow(params)
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method blockProfile
+   * @param {BlockProfileInterface} params
+   * @returns {Promise<T>} Block a User Profile
+   */
+  public blockProfile = async (params: BlockProfileInterface) => {
+    const { data } = await FanfulSdk.network.put<BasicResponseInterface>(URLS.blockProfile(params))
+
+    return data.payload
+  }
+
+  /**
+   * @method reportProfile
+   * @param {ReportInterface} payload
+   * @returns {Promise<T>} Like and Unlike a comment
+   */
+  public reportProfile = async (payload: ReportInterface) => {
+    const { data } = await FanfulSdk.network.post<BasicResponseInterface>(URLS.reportProfile, {
+      user_id: payload.id,
+      reason: payload.reason
+    })
+
+    return data.payload
+  }
+
+  /**
+   * @method joinRaffle
+   * @param {string} raffleId
+   * @returns {Promise<RaffleEntryInterface>} Join a Raffle
+   */
+  public joinRaffle = async (raffleId: string): Promise<RaffleEntryInterface> => {
+    const { data } = await FanfulSdk.network.post<BasicResponseInterface<RaffleEntryInterface>>(
+      URLS.joinRaffle(raffleId)
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method wonRaffle
+   * @param {{ raffleId: string; email_address: string }} params
+   * @returns {Promise<T>} Win a raffle
+   */
+  public wonRaffle = async (params: { raffleId: string; email_address: string }) => {
+    const { data } = await FanfulSdk.network.post<BasicResponseInterface>(
+      URLS.wonRaffle(params.raffleId),
+      { email_address: params.email_address }
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method rewardOnDailyAppOpening
+   * @returns {Promise<RewardMetadata>} Reward user on daily app opening
+   */
+  public rewardOnDailyAppOpening = async (): Promise<RewardMetadata> => {
+    const { data } = await FanfulSdk.network.post<BasicResponseInterface<RewardMetadata>>(
+      URLS.rewardOnDailyAppOpening
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method rewardOnTimeSpent
+   * @returns {Promise<RewardMetadata>} Reward user based on Time spent
+   */
+  public rewardOnTimeSpent = async (): Promise<RewardMetadata> => {
+    const { data } = await FanfulSdk.network.post<BasicResponseInterface<RewardMetadata>>(
+      URLS.rewardOnTimeSpent
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method rewardOnShopping
+   * @returns {Promise<RewardMetadata>} Reward user based on shopping
+   */
+  public rewardOnShopping = async (): Promise<RewardMetadata> => {
+    const { data } = await FanfulSdk.network.post<BasicResponseInterface<RewardMetadata>>(
+      URLS.rewardOnShopping
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method rewardOnLiveChat
+   * @returns {Promise<RewardMetadata>} Reward user on Live chat
+   */
+  public rewardOnLiveChat = async (): Promise<RewardMetadata> => {
+    const { data } = await FanfulSdk.network.post<BasicResponseInterface<RewardMetadata>>(
+      URLS.rewardOnLiveChat
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method signInUser
+   * @param {SignInUserInterface} payload
+   * @returns {Promise<UserSessionInterface>} Sign in a user
+   */
+  public signInUser = async (payload: SignInUserInterface): Promise<UserSessionInterface> => {
+    const { data } = await FanfulSdk.network.post<BasicResponseInterface<UserSessionInterface>>(
+      URLS.signInUser,
+      payload
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method signUpUser
+   * @param {SignUpUserInterface} payload
+   * @returns {Promise<UserSessionInterface>} Signup a user
+   */
+  public signUpUser = async (payload: SignUpUserInterface): Promise<UserSessionInterface> => {
+    const { data } = await FanfulSdk.network.post<BasicResponseInterface<UserSessionInterface>>(
+      URLS.signUpUser,
+      payload
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method verifyUserOtp
+   * @param {VerifyUserOtpInterface} payload
+   * @returns {Promise<UserSessionInterface>} Verify a user OTP
+   */
+  public verifyUserOtp = async (payload: VerifyUserOtpInterface): Promise<UserSessionInterface> => {
+    const { data } = await FanfulSdk.network.post<BasicResponseInterface<UserSessionInterface>>(
+      URLS.verifyUserOtp,
+      payload
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method updateProfile
+   * @param {UpdateProfileInterface} payload
+   * @returns {Promise<UserInterface>} Updates a user profile
+   */
+  public updateProfile = async (payload: UpdateProfileInterface): Promise<UserInterface> => {
+    const form = new FormData()
+
+    Object.entries(payload).forEach(([key, value]) => {
+      if (key === 'avatar' && !value.includes('https://')) {
+        const { ext, name } = getAssetMeta(value)
+
+        //@ts-ignore
+        form.append('files', {
+          uri: value,
+          type: 'image/jpeg',
+          name: `${name}.${ext}`
+        })
+      } else {
+        form.append(key, value)
+      }
+    })
+
+    const { data } = await FanfulSdk.network.put<BasicResponseInterface<UserInterface>>(
+      URLS.updateProfile,
+      form
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method forgotPassword
+   * @param {ForgotPasswordInterface} payload
+   * @returns {Promise<UserInterface>} Request for Forgot Password
+   */
+  public forgotPassword = async (payload: ForgotPasswordInterface): Promise<UserInterface> => {
+    const { data } = await FanfulSdk.network.post<BasicResponseInterface<UserInterface>>(
+      URLS.forgotPassword,
+      payload
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method resendOTP
+   * @param {SignInUserInterface} payload
+   * @returns {Promise<UserInterface>} Resend OTP for a user
+   */
+  public resendOTP = async (payload: SignInUserInterface): Promise<UserInterface> => {
+    const { data } = await FanfulSdk.network.post<BasicResponseInterface<UserInterface>>(
+      URLS.resendOTP,
+      payload
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method resetPassword
+   * @param {Omit<ResetPasswordInterface, 'confirm_password'>} payload
+   * @returns {Promise<UserInterface>} Request for Reset Password
+   */
+  public resetPassword = async (
+    payload: Omit<ResetPasswordInterface, 'confirm_password'>
+  ): Promise<UserInterface> => {
+    const { data } = await FanfulSdk.network.post<BasicResponseInterface<UserInterface>>(
+      URLS.resetPassword,
+      payload
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method refreshAccessToken
+   * @param {Pick<UserSessionInterface, 'refresh_token'>} payload
+   * @returns {Promise<UserSessionInterface>} Refresh Access Token
+   */
+  public refreshAccessToken = async (
+    payload: Pick<UserSessionInterface, 'refresh_token'>
+  ): Promise<UserSessionInterface> => {
+    const { data } = await FanfulSdk.network.post<BasicResponseInterface<UserSessionInterface>>(
+      URLS.refreshAccessToken,
+      payload
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method logoutUser
+   * @returns {Promise<T>} Logs out a user
+   */
+  public logoutUser = async () => {
+    const { data } = await FanfulSdk.network.post<BasicResponseInterface>(URLS.logoutUser)
+
+    return data.payload
+  }
+
+  /**
+   * @method deleteUser
+   * @returns {Promise<T>} Delete User Account Data
+   */
+  public deleteUser = async () => {
+    const { data } = await FanfulSdk.network.delete<BasicResponseInterface>(URLS.deleteUser)
+
+    return data.payload
+  }
+
+  /**
+   * @method likeAndUnlikeThread
+   * @param {ReactOnCommentInterface} params
+   * @returns {Promise<T>} Like and Unlike a Thread
+   */
+  public likeAndUnlikeThread = async (params: ReactOnCommentInterface) => {
+    const { data } = await FanfulSdk.network.put<BasicResponseInterface>(
+      URLS.likeAndUnlikeThread(params)
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method createThread
+   * @param {CreateCommentInterface} params
+   * @returns {Promise<CommentInterface>} Create a Thread for a comment
+   */
+  public createThread = async (params: CreateCommentInterface): Promise<CommentInterface> => {
+    const { data } = await FanfulSdk.network.post<BasicResponseInterface<CommentInterface>>(
+      URLS.createThread(params),
+      { caption: params.caption, id: params.id }
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method deleteThread
+   * @param {Pick<ReactOnCommentInterface, 'id' | 'post_id' | 'thread_id'>} params
+   * @returns {Promise<T>} Delete a Thread from a comment
+   */
+  public deleteThread = async (
+    params: Pick<ReactOnCommentInterface, 'id' | 'post_id' | 'thread_id'>
+  ) => {
+    const { data } = await FanfulSdk.network.delete<BasicResponseInterface>(
+      URLS.deleteThread(params),
+      { params: omit(params, 'post_id') }
+    )
 
     return data.payload
   }

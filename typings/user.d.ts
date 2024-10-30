@@ -112,3 +112,25 @@ export type ProfileFollowersOrFollowingQueryParamInterface = Pick<UserInterface,
   user_id: string
   is_following_page: boolean
 }
+
+export type SignInUserInterface = Partial<
+  Pick<UserInterface, 'email_address' | 'password' | 'username' | 'phone_number'>
+>
+
+export type SignUpUserInterface = Pick<
+  UserInterface,
+  'dob' | 'password' | 'last_name' | 'first_name' | 'phone_number' | 'email_address'
+>
+
+export type VerifyUserOtpInterface = {
+  token: string
+} & Partial<Pick<UserInterface, 'phone_number' | 'email_address'>>
+
+export type ForgotPasswordInterface = Partial<Pick<UserInterface, 'email_address' | 'phone_number'>>
+
+export type ResetPasswordInterface = Pick<UserInterface, 'password'> &
+  ForgotPasswordInterface & {
+    confirm_password: string
+  }
+
+export type UpdateProfileInterface = Partial<Pick<UserInterface, 'username' | 'avatar'>>
