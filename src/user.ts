@@ -206,4 +206,20 @@ export default class User {
 
     return data.payload
   }
+
+  /**
+   * @method refreshAccessToken
+   * @param {Pick<UserSessionInterface, 'refresh_token'>} payload
+   * @returns {Promise<UserSessionInterface>} Refresh Access Token
+   */
+  public refreshAccessToken = async (
+    payload: Pick<UserSessionInterface, 'refresh_token'>
+  ): Promise<UserSessionInterface> => {
+    const { data } = await this.network.post<BasicResponseInterface<UserSessionInterface>>(
+      URLS.refreshAccessToken,
+      payload
+    )
+
+    return data.payload
+  }
 }
