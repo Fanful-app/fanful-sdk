@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES6",
-    "module": "CommonJS",
+    "module": "ESNext",
     "outDir": "./dist",
     "baseUrl": "./",
     "strict": true,
@@ -9,7 +9,8 @@
     "esModuleInterop": true,
     "paths": {
       "@app/*": ["src/*"],
-      "@typings/*": ["typings/*"]
+      "@typings/*": ["typings/*"],
+      "axios": ["node_modules/axios/index.d.ts"]
     }
   },
   "include": ["src/**/*"],

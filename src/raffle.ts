@@ -4,38 +4,36 @@ import { AxiosInstance } from 'axios'
 import { URLS } from './helper/urls'
 
 export default class Raffle {
-  public network: AxiosInstance
+  private static network: AxiosInstance
 
   constructor(network: AxiosInstance) {
-    this.network = network
+    Raffle.network = network
   }
 
   /**
-   * @method getRaffles
+   * @method get
    * @param {PaginateParams} params
    * @param {RaffleFilterInterface} filter_type
    * @returns {Promise<PaginateResult<RaffleEntryInterface>>} Returns a list of all raffles
    */
-  public getRaffles = async ({
+  public get = async ({
     filter_type,
     ...params
   }: PaginateParams & RaffleFilterInterface): Promise<PaginateResult<RaffleEntryInterface>> => {
-    const { data } = await this.network.get<
+    const { data } = await Raffle.network.get<
       BasicResponseInterface<PaginateResult<RaffleEntryInterface>>
-    >(URLS.getRaffles(filter_type), {
-      params
-    })
+    >(URLS.getRaffles(filter_type), { params })
 
     return data.payload
   }
 
   /**
-   * @method joinRaffle
+   * @method join
    * @param {string} raffleId
    * @returns {Promise<RaffleEntryInterface>} Join a Raffle
    */
-  public joinRaffle = async (raffleId: string): Promise<RaffleEntryInterface> => {
-    const { data } = await this.network.post<BasicResponseInterface<RaffleEntryInterface>>(
+  public join = async (raffleId: string): Promise<RaffleEntryInterface> => {
+    const { data } = await Raffle.network.post<BasicResponseInterface<RaffleEntryInterface>>(
       URLS.joinRaffle(raffleId)
     )
 
@@ -43,12 +41,12 @@ export default class Raffle {
   }
 
   /**
-   * @method wonRaffle
+   * @method won
    * @param {{ raffleId: string; email_address: string }} params
    * @returns {Promise<T>} Win a raffle
    */
-  public wonRaffle = async (params: { raffleId: string; email_address: string }) => {
-    const { data } = await this.network.post<BasicResponseInterface>(
+  public won = async (params: { raffleId: string; email_address: string }) => {
+    const { data } = await Raffle.network.post<BasicResponseInterface>(
       URLS.wonRaffle(params.raffleId),
       { email_address: params.email_address }
     )

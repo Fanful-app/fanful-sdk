@@ -4,32 +4,32 @@ import { AxiosInstance } from 'axios'
 import { URLS } from './helper/urls'
 
 export default class Shop {
-  public network: AxiosInstance
+  private static network: AxiosInstance
 
   constructor(network: AxiosInstance) {
-    this.network = network
+    Shop.network = network
   }
 
   /**
-   * @method getShops
+   * @method get
    * @returns {Promise<ShopInterface>} Returns a list of shops
    */
-  public getShops = async (): Promise<ShopInterface> => {
-    const { data } = await this.network.get<BasicResponseInterface<ShopInterface>>(URLS.getShops)
+  public get = async (): Promise<ShopInterface> => {
+    const { data } = await Shop.network.get<BasicResponseInterface<ShopInterface>>(URLS.getShops)
 
     return data.payload
   }
 
   /**
-   * @method searchShops
+   * @method search
    * @param {string} search
    * @returns {Promise<ShopResponse>} Returns a list of searched shops
    */
-  public searchShops = async ({
+  public search = async ({
     search,
     ...params
   }: Partial<Omit<ShopResponse, 'content'>> & { search: string }): Promise<ShopResponse> => {
-    const { data } = await this.network.get<ShopResponse>(URLS.searchShops(search), {
+    const { data } = await Shop.network.get<ShopResponse>(URLS.searchShops(search), {
       params
     })
 

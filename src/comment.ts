@@ -10,21 +10,21 @@ import { URLS } from './helper/urls'
 import { ReportCommentInterface } from '@typings/user'
 
 export default class Comment {
-  public network: AxiosInstance
+  private static network: AxiosInstance
 
   constructor(network: AxiosInstance) {
-    this.network = network
+    Comment.network = network
   }
 
   /**
-   * @method getComment
+   * @method get
    * @param {Pick<CommentInterface, 'post_id'> & PaginateParams} params
    * @returns {Promise<PaginateResult<CommentInterface>>} Returns the list of comment
    */
-  public getComment = async (
+  public get = async (
     params: Pick<CommentInterface, 'post_id'> & PaginateParams
   ): Promise<PaginateResult<CommentInterface>> => {
-    const { data } = await this.network.get<
+    const { data } = await Comment.network.get<
       BasicResponseInterface<PaginateResult<CommentInterface>>
     >(URLS.getComment, { params })
 
@@ -32,12 +32,12 @@ export default class Comment {
   }
 
   /**
-   * @method createComment
+   * @method create
    * @param {CreateCommentInterface} params
    * @returns {Promise<CommentInterface, RewardMetadata>} Create comment for a post
    */
-  public createComment = async ({ post_id, ...payload }: CreateCommentInterface) => {
-    const { data } = await this.network.post<
+  public create = async ({ post_id, ...payload }: CreateCommentInterface) => {
+    const { data } = await Comment.network.post<
       BasicResponseInterface<CommentInterface, RewardMetadata>
     >(URLS.createComment(post_id), payload)
 
@@ -45,34 +45,49 @@ export default class Comment {
   }
 
   /**
-   * @method reportComment
+   * @method report
    * @param {ReportCommentInterface} payload
    * @returns {Promise<any>} Report a comment
    */
-  public reportComment = async (payload: Omit<ReportCommentInterface, 'post_id'>): Promise<any> => {
-    const { data } = await this.network.put<BasicResponseInterface>(URLS.reportComment, payload)
+  public report = async (payload: Omit<ReportCommentInterface, 'post_id'>): Promise<any> => {
+    const { data } = await Comment.network.put<BasicResponseInterface>(URLS.reportComment, payload)
 
     return data.payload
   }
 
   /**
-   * @method likeAndUnlikeComment
+   * @method delete
    * @param {ReactOnCommentInterface} params
    * @returns {Promise<T>} Like and Unlike a comment
    */
-  public deleteComment = async (params: Pick<ReactOnCommentInterface, 'id' | 'post_id'>) => {
-    const { data } = await this.network.delete<BasicResponseInterface>(URLS.deleteComment(params))
+  public delete = async (params: Pick<ReactOnCommentInterface, 'id' | 'post_id'>) => {
+    const { data } = await Comment.network.delete<BasicResponseInterface>(
+      URLS.deleteComment(params)
+    )
 
     return data.payload
   }
 
   /**
-   * @method likeAndUnlikeComment
+   * @method like
    * @param {ReactOnCommentInterface} params
    * @returns {Promise<RewardMetadata>} Like and Unlike a comment
    */
-  public likeAndUnlikeComment = async (params: ReactOnCommentInterface): Promise<RewardMetadata> => {
-    const { data } = await this.network.put<BasicResponseInterface<RewardMetadata>>(
+  public like = async (params: ReactOnCommentInterface): Promise<RewardMetadata> => {
+    const { data } = await Comment.network.put<BasicResponseInterface<RewardMetadata>>(
+      URLS.likeAndUnlikeComment(params)
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method unlike
+   * @param {ReactOnCommentInterface} params
+   * @returns {Promise<RewardMetadata>} Like and Unlike a comment
+   */
+  public unlike = async (params: ReactOnCommentInterface): Promise<RewardMetadata> => {
+    const { data } = await Comment.network.put<BasicResponseInterface<RewardMetadata>>(
       URLS.likeAndUnlikeComment(params)
     )
 

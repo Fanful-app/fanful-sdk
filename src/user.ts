@@ -1,20 +1,20 @@
 import { AxiosInstance } from 'axios'
 
+import { URLS } from '@app/helper/urls'
+import { getAssetMeta } from './helper/utils'
 import {
   UserInterface,
   ReportInterface,
   SignInUserInterface,
-  SignUpUserInterface,
   UserSessionInterface,
   BlockProfileInterface,
   UserReferralInterface,
-  VerifyUserOtpInterface,
   UpdateProfileInterface,
   FollowAndUnFollowProfileInterface,
   UserProfileFollowersOrFollowingInterface,
-  ProfileFollowersOrFollowingQueryParamInterface
+  ProfileFollowersOrFollowingQueryParamInterface,
+  UserRankInterface
 } from '@typings/user'
-import { URLS } from '@app/helper/urls'
 
 import {
   PaginateParams,
@@ -23,13 +23,11 @@ import {
   BasicResponseInterface
 } from '@typings/global'
 
-import { getAssetMeta } from './helper/utils'
-
 export default class User {
-  public network: AxiosInstance
+  private static network: AxiosInstance
 
   constructor(network: AxiosInstance) {
-    this.network = network
+    User.network = network
   }
 
   /**
@@ -40,7 +38,7 @@ export default class User {
   public getReferrals = async (
     params: PaginateParams
   ): Promise<PaginateResult<UserReferralInterface>> => {
-    const { data } = await this.network.get<
+    const { data } = await User.network.get<
       BasicResponseInterface<PaginateResult<UserReferralInterface>>
     >(URLS.getReferrals, { params })
 
@@ -48,12 +46,12 @@ export default class User {
   }
 
   /**
-   * @method getUserProfile
+   * @method getProfile
    * @param {string} userId - user id to search for a profile
    * @returns {Promise<UserSessionInterface['user']>} Returns a user profile details
    */
-  public getUserProfile = async (userId: string): Promise<UserSessionInterface['user']> => {
-    const { data } = await this.network.get<BasicResponseInterface<UserSessionInterface['user']>>(
+  public getProfile = async (userId: string): Promise<UserSessionInterface['user']> => {
+    const { data } = await User.network.get<BasicResponseInterface<UserSessionInterface['user']>>(
       URLS.getUserProfile(userId)
     )
 
@@ -61,13 +59,13 @@ export default class User {
   }
 
   /**
-   * @method getProfileFollowersOrFollowing
+   * @method getFollowers
    * @returns {Promise<PaginateResult<UserProfileFollowersOrFollowingInterface>>} Returns profile followers or following
    */
-  public getProfileFollowersOrFollowing = async (
+  public getFollowers = async (
     params: PaginateParams & ProfileFollowersOrFollowingQueryParamInterface
   ): Promise<PaginateResult<UserProfileFollowersOrFollowingInterface>> => {
-    const { data } = await this.network.get<
+    const { data } = await User.network.get<
       BasicResponseInterface<PaginateResult<UserProfileFollowersOrFollowingInterface>>
     >(URLS.getProfileFollowersOrFollowing(params), { params: { page: params.page } })
 
@@ -75,14 +73,39 @@ export default class User {
   }
 
   /**
-   * @method followAndUnFollow
+   * @method getFollowing
+   * @returns {Promise<PaginateResult<UserProfileFollowersOrFollowingInterface>>} Returns profile followers or following
+   */
+  public getFollowing = async (
+    params: PaginateParams & ProfileFollowersOrFollowingQueryParamInterface
+  ): Promise<PaginateResult<UserProfileFollowersOrFollowingInterface>> => {
+    const { data } = await User.network.get<
+      BasicResponseInterface<PaginateResult<UserProfileFollowersOrFollowingInterface>>
+    >(URLS.getProfileFollowersOrFollowing(params), { params: { page: params.page } })
+
+    return data.payload
+  }
+
+  /**
+   * @method follow
    * @param {FollowAndUnFollowProfileInterface} params
    * @returns {Promise<RewardMetadata>} Follow or Unfollow a user
    */
-  public followAndUnFollow = async (
-    params: FollowAndUnFollowProfileInterface
-  ): Promise<RewardMetadata> => {
-    const { data } = await this.network.put<BasicResponseInterface<RewardMetadata>>(
+  public follow = async (params: FollowAndUnFollowProfileInterface): Promise<RewardMetadata> => {
+    const { data } = await User.network.put<BasicResponseInterface<RewardMetadata>>(
+      URLS.followAndUnFollow(params)
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method unFollow
+   * @param {FollowAndUnFollowProfileInterface} params
+   * @returns {Promise<RewardMetadata>} Follow or Unfollow a user
+   */
+  public unFollow = async (params: FollowAndUnFollowProfileInterface): Promise<RewardMetadata> => {
+    const { data } = await User.network.put<BasicResponseInterface<RewardMetadata>>(
       URLS.followAndUnFollow(params)
     )
 
@@ -95,18 +118,18 @@ export default class User {
    * @returns {Promise<T>} Block a User Profile
    */
   public blockProfile = async (params: BlockProfileInterface) => {
-    const { data } = await this.network.put<BasicResponseInterface>(URLS.blockProfile(params))
+    const { data } = await User.network.put<BasicResponseInterface>(URLS.blockProfile(params))
 
     return data.payload
   }
 
   /**
-   * @method reportProfile
+   * @method report
    * @param {ReportInterface} payload
    * @returns {Promise<T>} Like and Unlike a comment
    */
-  public reportProfile = async (payload: ReportInterface) => {
-    const { data } = await this.network.post<BasicResponseInterface>(URLS.reportProfile, {
+  public report = async (payload: ReportInterface) => {
+    const { data } = await User.network.post<BasicResponseInterface>(URLS.reportProfile, {
       user_id: payload.id,
       reason: payload.reason
     })
@@ -120,36 +143,8 @@ export default class User {
    * @returns {Promise<UserSessionInterface>} Sign in a user
    */
   public signInUser = async (payload: SignInUserInterface): Promise<UserSessionInterface> => {
-    const { data } = await this.network.post<BasicResponseInterface<UserSessionInterface>>(
+    const { data } = await User.network.post<BasicResponseInterface<UserSessionInterface>>(
       URLS.signInUser,
-      payload
-    )
-
-    return data.payload
-  }
-
-  /**
-   * @method signUpUser
-   * @param {SignUpUserInterface} payload
-   * @returns {Promise<UserSessionInterface>} Signup a user
-   */
-  public signUpUser = async (payload: SignUpUserInterface): Promise<UserSessionInterface> => {
-    const { data } = await this.network.post<BasicResponseInterface<UserSessionInterface>>(
-      URLS.signUpUser,
-      payload
-    )
-
-    return data.payload
-  }
-
-  /**
-   * @method verifyUserOtp
-   * @param {VerifyUserOtpInterface} payload
-   * @returns {Promise<UserSessionInterface>} Verify a user OTP
-   */
-  public verifyUserOtp = async (payload: VerifyUserOtpInterface): Promise<UserSessionInterface> => {
-    const { data } = await this.network.post<BasicResponseInterface<UserSessionInterface>>(
-      URLS.verifyUserOtp,
       payload
     )
 
@@ -179,7 +174,7 @@ export default class User {
       }
     })
 
-    const { data } = await this.network.put<BasicResponseInterface<UserInterface>>(
+    const { data } = await User.network.put<BasicResponseInterface<UserInterface>>(
       URLS.updateProfile,
       form
     )
@@ -188,37 +183,30 @@ export default class User {
   }
 
   /**
-   * @method logoutUser
-   * @returns {Promise<T>} Logs out a user
-   */
-  public logoutUser = async () => {
-    const { data } = await this.network.post<BasicResponseInterface>(URLS.logoutUser)
-
-    return data.payload
-  }
-
-  /**
-   * @method deleteUser
+   * @method delete.
    * @returns {Promise<T>} Delete User Account Data
    */
-  public deleteUser = async () => {
-    const { data } = await this.network.delete<BasicResponseInterface>(URLS.deleteUser)
+  public delete = async () => {
+    const { data } = await User.network.delete<BasicResponseInterface>(URLS.deleteUser)
 
     return data.payload
   }
 
   /**
-   * @method refreshAccessToken
-   * @param {Pick<UserSessionInterface, 'refresh_token'>} payload
-   * @returns {Promise<UserSessionInterface>} Refresh Access Token
+   * @method getLeaderBoardPoints
+   * @param {PaginateParams} params
+   * @returns {Promise<PaginateResult<{user: UserRankInterface leader_board: PaginateResult<UserRankInterface>}>>} Returns a list of rank points
    */
-  public refreshAccessToken = async (
-    payload: Pick<UserSessionInterface, 'refresh_token'>
-  ): Promise<UserSessionInterface> => {
-    const { data } = await this.network.post<BasicResponseInterface<UserSessionInterface>>(
-      URLS.refreshAccessToken,
-      payload
-    )
+  public getRankPoints = async (
+    params?: PaginateParams
+  ): Promise<
+    PaginateResult<{ user: UserRankInterface; leader_board: PaginateResult<UserRankInterface> }>
+  > => {
+    const { data } = await User.network.get<
+      BasicResponseInterface<
+        PaginateResult<{ user: UserRankInterface; leader_board: PaginateResult<UserRankInterface> }>
+      >
+    >(URLS.getRankPoints, { params })
 
     return data.payload
   }

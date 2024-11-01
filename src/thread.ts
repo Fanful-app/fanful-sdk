@@ -5,20 +5,20 @@ import { URLS } from './helper/urls'
 import { omit } from './helper/utils'
 
 export default class Thread {
-  public network: AxiosInstance
+  private static network: AxiosInstance
 
   constructor(network: AxiosInstance) {
-    this.network = network
+    Thread.network = network
   }
 
   /**
-   * @method getThread
+   * @method get
    * @returns {Promise<PaginateResult<CommentInterface>>} Returns a list of threads
    */
-  public getThread = async (
+  public get = async (
     params?: Pick<CommentInterface, 'post_id' | 'thread_id'> & PaginateParams
   ): Promise<PaginateResult<CommentInterface>> => {
-    const { data } = await this.network.get<
+    const { data } = await Thread.network.get<
       BasicResponseInterface<PaginateResult<CommentInterface>>
     >(URLS.getThread, { params })
 
@@ -26,12 +26,12 @@ export default class Thread {
   }
 
   /**
-   * @method likeAndUnlikeThread
+   * @method like
    * @param {ReactOnCommentInterface} params
    * @returns {Promise<T>} Like and Unlike a Thread
    */
-  public likeAndUnlikeThread = async (params: ReactOnCommentInterface) => {
-    const { data } = await this.network.put<BasicResponseInterface>(
+  public like = async (params: ReactOnCommentInterface) => {
+    const { data } = await Thread.network.put<BasicResponseInterface>(
       URLS.likeAndUnlikeThread(params)
     )
 
@@ -39,12 +39,25 @@ export default class Thread {
   }
 
   /**
-   * @method createThread
+   * @method unlike
+   * @param {ReactOnCommentInterface} params
+   * @returns {Promise<T>} Like and Unlike a Thread
+   */
+  public unlike = async (params: ReactOnCommentInterface) => {
+    const { data } = await Thread.network.put<BasicResponseInterface>(
+      URLS.likeAndUnlikeThread(params)
+    )
+
+    return data.payload
+  }
+
+  /**
+   * @method create
    * @param {CreateCommentInterface} params
    * @returns {Promise<CommentInterface>} Create a Thread for a comment
    */
-  public createThread = async (params: CreateCommentInterface): Promise<CommentInterface> => {
-    const { data } = await this.network.post<BasicResponseInterface<CommentInterface>>(
+  public create = async (params: CreateCommentInterface): Promise<CommentInterface> => {
+    const { data } = await Thread.network.post<BasicResponseInterface<CommentInterface>>(
       URLS.createThread(params),
       { caption: params.caption, id: params.id }
     )
@@ -53,16 +66,15 @@ export default class Thread {
   }
 
   /**
-   * @method deleteThread
+   * @method delete
    * @param {Pick<ReactOnCommentInterface, 'id' | 'post_id' | 'thread_id'>} params
-   * @returns {Promise<T>} Delete a Thread from a comment
+   * @returns {Promise<CommentInterface>} Delete a Thread from a comment
    */
-  public deleteThread = async (
-    params: Pick<ReactOnCommentInterface, 'id' | 'post_id' | 'thread_id'>
-  ) => {
-    const { data } = await this.network.delete<BasicResponseInterface>(URLS.deleteThread(params), {
-      params: omit(params, 'post_id')
-    })
+  public delete = async (params: Pick<ReactOnCommentInterface, 'id' | 'post_id' | 'thread_id'>) => {
+    const { data } = await Thread.network.delete<BasicResponseInterface<CommentInterface>>(
+      URLS.deleteThread(params),
+      { params: omit(params, 'post_id') }
+    )
 
     return data.payload
   }

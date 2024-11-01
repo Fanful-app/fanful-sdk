@@ -4,21 +4,19 @@ import { AxiosInstance } from 'axios'
 import { URLS } from './helper/urls'
 
 export default class Notification {
-  public network: AxiosInstance
+  private static network: AxiosInstance
 
   constructor(network: AxiosInstance) {
-    this.network = network
+    Notification.network = network
   }
 
   /**
-   * @method getNotifications
+   * @method get
    * @param {PaginateParams} params
    * @returns {Promise<PaginateResult<NotificationInterface>>} Returns a list of notifications
    */
-  public getNotifications = async (
-    params?: PaginateParams
-  ): Promise<PaginateResult<NotificationInterface>> => {
-    const { data } = await this.network.get<
+  public get = async (params?: PaginateParams): Promise<PaginateResult<NotificationInterface>> => {
+    const { data } = await Notification.network.get<
       BasicResponseInterface<PaginateResult<NotificationInterface>>
     >(URLS.getNotifications, { params })
 
@@ -26,12 +24,14 @@ export default class Notification {
   }
 
   /**
-   * @method seenNotification
+   * @method seen
    * @param {Pick<NotificationInterface, 'id'>} params
    * @returns {Promise<T>} Make or Mark a Notification as seen
    */
-  public seenNotification = async ({ id }: Pick<NotificationInterface, 'id'>) => {
-    const { data } = await this.network.post<BasicResponseInterface>(URLS.seenNotification(id))
+  public seen = async ({ id }: Pick<NotificationInterface, 'id'>) => {
+    const { data } = await Notification.network.post<BasicResponseInterface>(
+      URLS.seenNotification(id)
+    )
 
     return data.payload
   }
@@ -40,8 +40,10 @@ export default class Notification {
    * @method markAllNotification
    * @returns {Promise<T>} Mark all Notification as seen
    */
-  public markAllNotification = async () => {
-    const { data } = await this.network.post<BasicResponseInterface>(URLS.markAllNotification)
+  public markAll = async () => {
+    const { data } = await Notification.network.post<BasicResponseInterface>(
+      URLS.markAllNotification
+    )
 
     return data.payload
   }
@@ -51,8 +53,8 @@ export default class Notification {
    * @param {FcmTokenInterface} payload
    * @returns {Promise<T>} Register Push Notification on device
    */
-  public registerPushNotification = async (payload: FcmTokenInterface) => {
-    const { data } = await this.network.post<BasicResponseInterface>(
+  public register = async (payload: FcmTokenInterface) => {
+    const { data } = await Notification.network.post<BasicResponseInterface>(
       URLS.registerPushNotification,
       payload
     )
