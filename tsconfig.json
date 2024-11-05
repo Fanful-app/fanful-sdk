@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "ES6",
     "module": "ESNext",
+    "moduleResolution": "node",
     "outDir": "./dist",
     "baseUrl": "./",
     "strict": true,
@@ -17,5 +18,21 @@
   "exclude": ["node_modules", "dist"],
   "ts-node": {
     "require": ["tsconfig-paths/register"]
+  },
+  "tsc-alias": {
+    "verbose": false,
+    "resolveFullPaths": true,
+    "replacers": {
+      "exampleReplacer": {
+        "enabled": true
+      },
+      "otherReplacer": {
+        "enabled": true
+      }
+    },
+    "fileExtensions": {
+      "inputGlob": "{js,jsx,mjs}",
+      "outputCheck": ["js", "json", "jsx", "mjs"]
+    }
   }
 }

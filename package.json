@@ -15,7 +15,8 @@
   "type": "module",
   "files": [
     "src",
-    "bin"
+    "bin",
+    "dist"
   ],
   "scripts": {
     "build": "tsc && tsc-alias",

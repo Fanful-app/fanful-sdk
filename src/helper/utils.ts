@@ -24,3 +24,16 @@ export function getAssetMeta(file: string) {
 
   return { ext: fileExt, name: fileName }
 }
+
+export const reportError = (error: Error) => {
+  if (typeof window !== 'undefined') {
+    // If running in the browser, use the window.reportError if it's defined
+    if (window.reportError) {
+      window.reportError(error)
+    } else {
+      console.error('Error reported:', error.message)
+    }
+  } else {
+    console.error('Error reported (Node):', error.message)
+  }
+}

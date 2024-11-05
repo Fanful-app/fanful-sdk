@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios'
 import { FanfulSdkOptions } from '@typings/global'
+import { reportError } from './utils'
 
 const envconfig: Record<NonNullable<FanfulSdkOptions['mode']>, string> = {
   test: 'https://phoenix-fanful-2d74e42e73ee.herokuapp.com',
