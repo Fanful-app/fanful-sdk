@@ -44,6 +44,7 @@ build/Release
 # Dependency directories
 
 node_modules/
+dist/
 jspm_packages/
 
 # Optional npm cache directory
@@ -105,3 +106,4 @@ jspm_packages/
 
 # Visual Studio Code
 .vscode/
+
