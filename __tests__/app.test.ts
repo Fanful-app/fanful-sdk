@@ -15,3 +15,4 @@ describe('Testing Fanful SDK', () => {
     expect(sdk).toHaveProperty('getCountries')
   })
 })
+
