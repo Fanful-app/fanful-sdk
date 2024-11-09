@@ -1,95 +1,96 @@
-import axios from 'axios'
+import axios, { AxiosInstance } from 'axios'
 import MockAdapter from 'axios-mock-adapter'
 import Notification from '../src/notification'
+import { PaginateParams, PaginateResult } from '../typings/global'
+import type { NotificationInterface, FcmTokenInterface } from '../typings/notification'
+import { NotificationType } from '../typings/enums'
 import { URLS } from '../src/helper/urls'
 
-// const mock = new MockAdapter(axios)
-// let notification: Notification
-
-let mock: MockAdapter
-let notification: Notification
-
-beforeEach(() => {
-  const axiosInstance = axios.create()
-  mock = new MockAdapter(axiosInstance)
-  notification = new Notification(axiosInstance)
-})
-
-// beforeEach(() => {
-//   notification = new Notification(axios)
-//   mock.reset()
-// })
-
 describe('Notification Class', () => {
-  it('should fetch notifications', async () => {
-    const mockResponse = {
-      status: 200,
-      message: 'Notifications fetched successfully',
-      payload: {
-        content: [{ id: '1', message: 'New notification' }],
-        totalElements: 1,
-        totalPages: 1,
-        size: 10,
-        number: 1
-      },
-      metadata: null
-    }
+  let notificationService: Notification
+  let mock: MockAdapter
 
-    mock.onGet(URLS.getNotifications).reply(200, mockResponse)
-
-    const result = await notification.get({ page: 1, size: 10 })
-
-    expect(result.content).toEqual(mockResponse.payload.content)
-    expect(result.totalElements).toBe(1)
-    expect(result.totalPages).toBe(1)
+  beforeEach(() => {
+    mock = new MockAdapter(axios)
+    notificationService = new Notification(axios as AxiosInstance)
   })
 
-  it('should mark notification as seen', async () => {
-    const mockResponse = {
-      status: 200,
-      message: 'Notification marked as seen',
-      payload: true,
-      metadata: null
+  afterEach(() => {
+    mock.reset()
+  })
+
+  it('should fetch notifications list', async () => {
+    const mockNotifications: PaginateResult<NotificationInterface> = {
+      docs: [
+        {
+          id: '1',
+          message: 'New Comment',
+          post_id: '123',
+          is_seen: false,
+          type: NotificationType.COMMENTED,
+          created_at: Date.now(),
+          updated_at: Date.now(),
+          post: { id: '123', media_url: 'https://example.com/image.png' }
+        }
+      ],
+      total: 1,
+      limit: 10,
+      page: 1,
+      pages: 1,
+      offset: 0,
+      totalDocs: 0,
+      totalPages: 0,
+      hasPrevPage: false,
+      hasNextPage: false,
+      pagingCounter: 0
     }
 
-    const notificationId = '123'
+    mock.onGet(URLS.getNotifications).reply(200, {
+      payload: mockNotifications
+    })
 
-    mock.onPost(URLS.seenNotification(notificationId)).reply(200, mockResponse)
+    const params: PaginateParams = { page: 1 }
+    const notifications = await notificationService.get(params)
+    expect(notifications).toEqual(mockNotifications)
+  })
 
-    const result = await notification.seen({ id: notificationId })
+  it('should mark a notification as seen', async () => {
+    const mockNotificationId = '1'
+    const mockResponse = { success: true }
 
-    expect(result).toBe(true)
+    mock.onPost(URLS.seenNotification(mockNotificationId)).reply(200, {
+      payload: mockResponse
+    })
+
+    const result = await notificationService.seen({ id: mockNotificationId })
+    expect(result).toEqual(mockResponse)
   })
 
   it('should mark all notifications as seen', async () => {
-    const mockResponse = {
-      status: 200,
-      message: 'All notifications marked as seen',
-      payload: true,
-      metadata: null
-    }
+    const mockResponse = { success: true }
 
-    mock.onPost(URLS.markAllNotification).reply(200, mockResponse)
+    mock.onPost(URLS.markAllNotification).reply(200, {
+      payload: mockResponse
+    })
 
-    const result = await notification.markAll()
-
-    expect(result).toBe(true)
+    const result = await notificationService.markAll()
+    expect(result).toEqual(mockResponse)
   })
 
-  it('should register push notification token', async () => {
-    const mockResponse = {
-      status: 200,
-      message: 'Push notification registered successfully',
-      payload: true,
-      metadata: null
+  it('should register a push notification', async () => {
+    const mockPayload: FcmTokenInterface = {
+      device_id: 'device123',
+      is_active: true,
+      device_type: 'android',
+      device_token: 'token123'
     }
+    const mockResponse = { success: true }
 
-    const fcmToken = { token: 'mock-fcm-token' }
+    mock.onPost(URLS.registerPushNotification).reply(200, {
+      payload: mockResponse
+    })
 
-    mock.onPost(URLS.registerPushNotification, fcmToken).reply(200, mockResponse)
-
-    const result = await notification.register(fcmToken)
-
-    expect(result).toBe(true)
+    const result = await notificationService.register(mockPayload)
+    expect(result).toEqual(mockResponse)
   })
 })

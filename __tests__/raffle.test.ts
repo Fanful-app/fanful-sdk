@@ -3,11 +3,8 @@ import MockAdapter from 'axios-mock-adapter'
 import Raffle from '../src/raffle'
 import { URLS } from '../src/helper/urls'
 import { BasicResponseInterface, PaginateParams, PaginateResult } from '../typings/global'
-import {
-  RaffleEntryInterface,
-  RaffleEntryStatusType,
-  RaffleFilterInterface
-} from '../typings/reward'
+import type { RaffleEntryInterface, RaffleFilterInterface } from '../typings/reward'
+import { RaffleEntryStatusType } from '../typings/enums'
 
 describe('Raffle class', () => {
   let mock: MockAdapter

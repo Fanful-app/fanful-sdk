@@ -1,122 +1,118 @@
-import axios from 'axios'
+import axios, { AxiosInstance } from 'axios'
 import MockAdapter from 'axios-mock-adapter'
+import { RewardPointInterface } from '../typings/reward'
 import Reward from '../src/reward'
+import {
+  BasicResponseInterface,
+  PaginateParams,
+  PaginateResult,
+  RewardMetadata
+} from '../typings/global'
+import { RewardPointType } from '../typings/enums'
 import { URLS } from '../src/helper/urls'
 
-const mock = new MockAdapter(axios)
-let reward: Reward
+let mock: MockAdapter
+let rewardService: Reward
 
-beforeEach(() => {
-  reward = new Reward(axios)
+beforeAll(() => {
+  const network: AxiosInstance = axios.create()
+  mock = new MockAdapter(network)
+  rewardService = new Reward(network)
+})
+
+afterEach(() => {
   mock.reset()
 })
 
-describe('Reward Class', () => {
-  it('should fetch rewards', async () => {
-    const mockResponse = {
-      status: 200,
-      message: 'Rewards fetched successfully',
-      payload: {
-        content: [{ id: '1', points: 100 }],
-        totalElements: 1,
-        totalPages: 1,
-        size: 10,
-        number: 1
-      },
-      metadata: null
-    }
+describe('Reward Service', () => {
+  const mockRewardPoint: RewardPointInterface = {
+    id: '1',
+    title: 'Daily Login',
+    points: 10,
+    subtitle: 'Reward for daily login',
+    max_count: 1,
+    current_count: 1,
+    type: RewardPointType.ENGAGE,
+    is_completed: true,
+    created_at: new Date(),
+    updated_at: new Date()
+  }
 
-    const paginateParams = { page: 1, size: 10 }
+  const mockRewardMetadata: RewardMetadata = {
+    message: 'Rewarded successfully',
+    isMaxPointForTheDay: false
+  }
 
-    mock.onGet(URLS.getRewards).reply(200, mockResponse)
+  const mockPaginatedRewards: PaginateResult<RewardPointInterface> = {
+    items: [mockRewardPoint],
+    total: 1,
+    page: 1,
+    limit: 10,
+    docs: [],
+    offset: 0,
+    totalDocs: 0,
+    totalPages: 0,
+    hasPrevPage: false,
+    hasNextPage: false,
+    pagingCounter: 0
+  }
 
-    const result = await reward.get(paginateParams)
+  it('should fetch rewards with pagination', async () => {
+    const params: PaginateParams = { page: 1 }
+    mock.onGet(URLS.getRewards, { params }).reply(200, {
+      payload: mockPaginatedRewards
+    } as BasicResponseInterface<PaginateResult<RewardPointInterface>>)
 
-    expect(result.content).toEqual(mockResponse.payload.content)
-    expect(result.totalElements).toBe(1)
-    expect(result.totalPages).toBe(1)
+    const result = await rewardService.get(params)
+    expect(result).toEqual(mockPaginatedRewards)
   })
 
   it('should fetch fan reward points', async () => {
-    const mockResponse = {
-      status: 200,
-      message: 'Fan reward points fetched successfully',
-      payload: {
-        daily: { content: [{ id: 'daily1', points: 50 }] },
-        continues: { content: [{ id: 'continue1', points: 150 }] }
-      },
-      metadata: null
+    const mockFanRewardPoints = {
+      daily: { items: [mockRewardPoint], total: 1, page: 1, limit: 10 },
+      continues: { items: [mockRewardPoint], total: 1, page: 1, limit: 10 }
     }
+    mock.onGet(URLS.getFanRewardPoints).reply(200, {
+      payload: mockFanRewardPoints
+    } as BasicResponseInterface<typeof mockFanRewardPoints>)
 
-    mock.onGet(URLS.getFanRewardPoints).reply(200, mockResponse)
-
-    const result = await reward.getPoints()
-
-    expect(result.daily.content).toEqual(mockResponse.payload.daily.content)
-    expect(result.continues.content).toEqual(mockResponse.payload.continues.content)
+    const result = await rewardService.getPoints()
+    expect(result).toEqual(mockFanRewardPoints)
   })
 
-  it('should reward user on daily app opening', async () => {
-    const mockResponse = {
-      status: 200,
-      message: 'Rewarded on daily app opening',
-      payload: { points: 50, message: 'You have earned 50 points' },
-      metadata: null
-    }
+  it('should reward on daily app opening', async () => {
+    mock.onPost(URLS.rewardOnDailyAppOpening).reply(200, {
+      payload: mockRewardMetadata
+    } as BasicResponseInterface<RewardMetadata>)
 
-    mock.onPost(URLS.rewardOnDailyAppOpening).reply(200, mockResponse)
-
-    const result = await reward.rewardOnDailyAppOpening()
-
-    expect(result.points).toBe(50)
-    expect(result.message).toBe('You have earned 50 points')
+    const result = await rewardService.rewardOnDailyAppOpening()
+    expect(result).toEqual(mockRewardMetadata)
   })
 
-  it('should reward user based on time spent', async () => {
-    const mockResponse = {
-      status: 200,
-      message: 'Rewarded based on time spent',
-      payload: { points: 30, message: 'You have earned 30 points for your time' },
-      metadata: null
-    }
+  it('should reward based on time spent', async () => {
+    mock.onPost(URLS.rewardOnTimeSpent).reply(200, {
+      payload: mockRewardMetadata
+    } as BasicResponseInterface<RewardMetadata>)
 
-    mock.onPost(URLS.rewardOnTimeSpent).reply(200, mockResponse)
-
-    const result = await reward.rewardOnTimeSpent()
-
-    expect(result.points).toBe(30)
-    expect(result.message).toBe('You have earned 30 points for your time')
+    const result = await rewardService.rewardOnTimeSpent()
+    expect(result).toEqual(mockRewardMetadata)
   })
 
-  it('should reward user based on shopping', async () => {
-    const mockResponse = {
-      status: 200,
-      message: 'Rewarded based on shopping',
-      payload: { points: 100, message: 'You have earned 100 points for shopping' },
-      metadata: null
-    }
+  it('should reward based on shopping', async () => {
+    mock.onPost(URLS.rewardOnShopping).reply(200, {
+      payload: mockRewardMetadata
+    } as BasicResponseInterface<RewardMetadata>)
 
-    mock.onPost(URLS.rewardOnShopping).reply(200, mockResponse)
-
-    const result = await reward.rewardOnShopping()
-
-    expect(result.points).toBe(100)
-    expect(result.message).toBe('You have earned 100 points for shopping')
+    const result = await rewardService.rewardOnShopping()
+    expect(result).toEqual(mockRewardMetadata)
   })
 
-  it('should reward user on live chat', async () => {
-    const mockResponse = {
-      status: 200,
-      message: 'Rewarded on live chat',
-      payload: { points: 20, message: 'You have earned 20 points for participating in live chat' },
-      metadata: null
-    }
+  it('should reward on live chat', async () => {
+    mock.onPost(URLS.rewardOnLiveChat).reply(200, {
+      payload: mockRewardMetadata
+    } as BasicResponseInterface<RewardMetadata>)
 
-    mock.onPost(URLS.rewardOnLiveChat).reply(200, mockResponse)
-
-    const result = await reward.rewardOnLiveChat()
-
-    expect(result.points).toBe(20)
-    expect(result.message).toBe('You have earned 20 points for participating in live chat')
+    const result = await rewardService.rewardOnLiveChat()
+    expect(result).toEqual(mockRewardMetadata)
   })
 })
