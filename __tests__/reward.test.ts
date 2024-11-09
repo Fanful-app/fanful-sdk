@@ -34,8 +34,8 @@ describe('Reward Service', () => {
     current_count: 1,
     type: RewardPointType.ENGAGE,
     is_completed: true,
-    created_at: new Date(),
-    updated_at: new Date()
+    created_at: Date.now(),
+    updated_at: Date.now()
   }
 
   const mockRewardMetadata: RewardMetadata = {

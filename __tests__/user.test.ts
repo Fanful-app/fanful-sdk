@@ -130,7 +130,7 @@ describe('User Class', () => {
         id: '980371',
         bio: 'i am a boy',
         dob: '31-03-1998',
-        avatar: '',
+        avatar: 'user.png',
         ranking: 30,
         country: 'Nigeria',
         username: 'MiltonBlack',
