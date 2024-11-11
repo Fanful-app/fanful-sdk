@@ -1,5 +1,4 @@
 import axios, { AxiosInstance } from 'axios'
-import MockAdapter from 'axios-mock-adapter'
 import Notification from '../src/notification'
 import { PaginateParams, PaginateResult } from '../typings/global'
 import type { NotificationInterface, FcmTokenInterface } from '../typings/notification'
@@ -8,10 +7,8 @@ import { URLS } from '../src/helper/urls'
 
 describe('Notification Class', () => {
   let notificationService: Notification
-  let mock: MockAdapter
 
   beforeEach(() => {
-    mock = new MockAdapter(axios)
     notificationService = new Notification(axios as AxiosInstance)
   })
 

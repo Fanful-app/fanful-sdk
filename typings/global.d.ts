@@ -1,3 +1,5 @@
+import MockAdapter from 'axios-mock-adapter'
+
 export interface BasicResponseInterface<T = null, M = null> {
   payload: T
   metadata: M
@@ -37,3 +39,8 @@ export type FanfulSdkOptions = {
 }
 
 export interface PaginateParams extends Pick<PaginateResult, 'page'> {}
+
+
+declare global {
+  var mock: MockAdapter
+}

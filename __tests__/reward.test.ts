@@ -11,13 +11,10 @@ import {
 import { RewardPointType } from '../typings/enums'
 import { URLS } from '../src/helper/urls'
 
-let mock: MockAdapter
 let rewardService: Reward
 
 beforeAll(() => {
-  const network: AxiosInstance = axios.create()
-  mock = new MockAdapter(network)
-  rewardService = new Reward(network)
+  rewardService = new Reward(axios)
 })
 
 afterEach(() => {

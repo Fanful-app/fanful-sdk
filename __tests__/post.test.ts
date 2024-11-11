@@ -1,5 +1,4 @@
 import axios from 'axios'
-import MockAdapter from 'axios-mock-adapter'
 import Post from '../src/post'
 import { URLS } from '../src/helper/urls'
 import { BasicResponseInterface, PaginateResult, RewardMetadata } from '../typings/global'
@@ -175,12 +174,9 @@ const reportPostPayload: ReportInterface = {
 
 describe('Post Class', () => {
   let postService: Post
-  let mock: MockAdapter
 
   beforeAll(() => {
-    const axiosInstance = axios.create()
-    postService = new Post(axiosInstance)
-    mock = new MockAdapter(axiosInstance)
+    postService = new Post(axios)
   })
 
   afterEach(() => {

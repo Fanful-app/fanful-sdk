@@ -12,13 +12,10 @@ import { CommentInterface, CreateCommentInterface, ReactOnCommentInterface } fro
 import { ReportCommentInterface } from '../typings/user'
 
 describe('Comment class', () => {
-  let mock: MockAdapter
   let comment: Comment
 
   beforeEach(() => {
-    const axiosInstance = axios.create()
-    mock = new MockAdapter(axiosInstance)
-    comment = new Comment(axiosInstance)
+    comment = new Comment(axios)
   })
 
   afterEach(() => {

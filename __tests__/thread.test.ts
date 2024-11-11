@@ -1,16 +1,13 @@
 import axios from 'axios'
-import MockAdapter from 'axios-mock-adapter'
 import Thread from '../src/thread'
 import { BasicResponseInterface, PaginateResult } from '../typings/global'
 import { CommentInterface, CreateCommentInterface, ReactOnCommentInterface } from '../typings/post'
 import { URLS } from '../src/helper/urls'
 
 describe('Thread Class', () => {
-  let mock: MockAdapter
   let thread: Thread
 
   beforeAll(() => {
-    mock = new MockAdapter(axios)
     thread = new Thread(axios)
   })
 

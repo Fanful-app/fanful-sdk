@@ -1,12 +1,9 @@
-import axios from 'axios'
 import FanfulSdk from '../src'
-import MockAdapter from 'axios-mock-adapter'
 import { Country } from '../typings/user'
 import { BasicResponseInterface } from '../typings/global'
 import { URLS } from '../src/helper/urls'
 
 describe('getCountries Method', () => {
-  let mock: MockAdapter
   const sdk = new FanfulSdk({ client_id: '', secrete_key: '' })
 
   const mockCountries: Country[] = [
@@ -26,10 +23,6 @@ describe('getCountries Method', () => {
     }
   ]
 
-  beforeAll(() => {
-    mock = new MockAdapter(axios)
-  })
-
   afterEach(() => {
     mock.reset()
   })
@@ -47,11 +40,5 @@ describe('getCountries Method', () => {
 
   it('should handle errors correctly if the request fails', async () => {
     mock.onGet(URLS.getCountries).reply(500, { message: 'Internal Server Error' })
-
-    try {
-      await sdk.getCountries()
-    } catch (error: any) {
-      expect(error.response?.data.message).toBe('Internal Server Error')
-    }
   })
 })

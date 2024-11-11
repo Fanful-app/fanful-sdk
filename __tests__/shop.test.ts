@@ -6,11 +6,9 @@ import { ShopInterface, ShopResponse } from '../typings/shop'
 import { URLS } from '../src/helper/urls'
 
 describe('Shop Class', () => {
-  let mock: MockAdapter
   let shop: Shop
 
   beforeAll(() => {
-    mock = new MockAdapter(axios)
     shop = new Shop(axios)
   })
 

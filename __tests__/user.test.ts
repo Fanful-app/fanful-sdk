@@ -1,5 +1,4 @@
 import axios, { AxiosInstance } from 'axios'
-import MockAdapter from 'axios-mock-adapter'
 import User from '../src/user'
 import { URLS } from '../src/helper/urls'
 import { PaginateResult, BasicResponseInterface, RewardMetadata } from '../typings/global'
@@ -11,13 +10,10 @@ import {
 } from '../typings/user'
 
 describe('User Class', () => {
-  let mock: MockAdapter
   let userInstance: User
-  const network: AxiosInstance = axios.create()
 
   beforeAll(() => {
-    mock = new MockAdapter(network)
-    userInstance = new User(network)
+    userInstance = new User(axios)
   })
 
   afterEach(() => {

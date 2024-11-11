@@ -1,5 +1,4 @@
 import axios, { AxiosInstance } from 'axios'
-import MockAdapter from 'axios-mock-adapter'
 import Auth from '../src/auth'
 import { URLS } from '../src/helper/urls'
 import {
@@ -14,10 +13,8 @@ import {
 
 describe('Auth Class', () => {
   let authService: Auth
-  let mock: MockAdapter
 
   beforeEach(() => {
-    mock = new MockAdapter(axios)
     authService = new Auth(axios as AxiosInstance)
   })
 

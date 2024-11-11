@@ -7,13 +7,10 @@ import type { RaffleEntryInterface, RaffleFilterInterface } from '../typings/rew
 import { RaffleEntryStatusType } from '../typings/enums'
 
 describe('Raffle class', () => {
-  let mock: MockAdapter
   let raffle: Raffle
 
   beforeEach(() => {
-    const axiosInstance = axios.create()
-    mock = new MockAdapter(axiosInstance)
-    raffle = new Raffle(axiosInstance)
+    raffle = new Raffle(axios)
   })
 
   afterEach(() => {
