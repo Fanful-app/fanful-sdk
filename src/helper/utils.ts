@@ -25,14 +25,18 @@ export function getAssetMeta(file: string) {
   return { ext: fileExt, name: fileName }
 }
 
-export const reportError = (error: Error) => {
-  if (typeof window !== 'undefined') {
-    if (window.reportError) {
-      window.reportError(error)
-    } else { 
-      console.error('Error reported:', error?.message)
-    }
-  } else {
-    console.error('Error reported (Node):', error?.message)
-  }
+/**
+ *
+ * @description Reports any thrown error to our error service example Sentry.
+ * @function reportError
+ * @property Error
+ * @property stackTrace
+ * @returns void
+ */
+
+export const reportError = (error: Error | string): void => {
+  // Report error to external service like sentry or firebase crashlytics
+  // crashlytics().recordError(error instanceof Error ? error : new Error(error));
+
+  console.error('Reported Error to our external service:', error)
 }

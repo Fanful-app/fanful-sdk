@@ -6,7 +6,8 @@ import {
   UserReferralInterface,
   UserSessionInterface,
   UserProfileFollowersOrFollowingInterface,
-  UserRankInterface
+  UserRankInterface,
+  SignInUserInterface
 } from '../typings/user'
 
 describe('User Class', () => {
@@ -14,14 +15,6 @@ describe('User Class', () => {
 
   beforeAll(() => {
     userInstance = new User(axios)
-  })
-
-  afterEach(() => {
-    mock.reset()
-  })
-
-  afterAll(() => {
-    mock.restore()
   })
 
   test('getReferrals returns list of referrals', async () => {
@@ -101,6 +94,40 @@ describe('User Class', () => {
     expect(result).toEqual(mockResponse.payload)
   })
 
+  test('getFollowing returns users following profile', async () => {
+    const params = { page: 1, username: 'testuser', user_id: '123', is_following_page: true }
+    const mockResponse: BasicResponseInterface<
+      PaginateResult<UserProfileFollowersOrFollowingInterface>
+    > = {
+      payload: {
+        total: 0,
+        page: 1,
+        limit: 10,
+        docs: [
+          {
+            id: '12345',
+            username: 'abiola',
+            avatar: 'https://abi.com/image',
+            display_name: 'abiola'
+          }
+        ],
+        offset: 0,
+        totalDocs: 0,
+        totalPages: 0,
+        hasPrevPage: false,
+        hasNextPage: false,
+        pagingCounter: 0
+      },
+      metadata: null,
+      status: 0,
+      message: ''
+    }
+
+    mock.onGet(URLS.getProfileFollowersOrFollowing(params)).reply(200, mockResponse)
+    const result = await userInstance.getFollowing(params)
+    expect(result).toEqual(mockResponse.payload)
+  })
+
   test('follow sends follow request and returns reward metadata', async () => {
     const params = { id: '123', is_following: true, number_of_following: 5 }
     const mockResponse: BasicResponseInterface<RewardMetadata> = {
@@ -109,13 +136,87 @@ describe('User Class', () => {
         isMaxPointForTheDay: false
       },
       metadata: null,
-      status: 0,
+      status: 200,
       message: ''
     }
     mock.onPut(URLS.followAndUnFollow(params)).reply(200, mockResponse)
 
     const result = await userInstance.follow(params)
     expect(result).toEqual(mockResponse.payload)
+  })
+
+  test('unfollow a user profile', async () => {
+    const params = { id: '123', is_following: false, number_of_following: 5 }
+
+    const mockResponse: BasicResponseInterface<RewardMetadata> = {
+      payload: {
+        message: 'Rewarded successfully',
+        isMaxPointForTheDay: false
+      },
+      metadata: null,
+      status: 200,
+      message: ''
+    }
+
+    mock.onPut(URLS.followAndUnFollow(params)).reply(200, mockResponse)
+    const result = await userInstance.unFollow(params)
+    expect(result).toEqual(mockResponse.payload)
+  })
+
+  test('should block a user profile', async () => {
+    const params = {
+      id: 'nuie6732h9',
+      is_blocked: false
+    }
+    const mockedData: BasicResponseInterface = {
+      payload: null,
+      metadata: null,
+      status: 200,
+      message: ''
+    }
+    mock.onPut(URLS.blockProfile(params)).reply(200, mockedData)
+    const result = await userInstance.blockProfile(params)
+    expect(result).toEqual(mockedData.payload)
+  })
+
+  test('should report a user', async () => {
+    const mockedData: BasicResponseInterface = {
+      payload: null,
+      metadata: null,
+      status: 200,
+      message: ''
+    }
+    mock.onPost(URLS.reportProfile).reply(200, mockedData)
+    const result = await userInstance.report({
+      id: '123098456',
+      reason: 'annoying and stupid'
+    })
+    expect(result).toEqual(mockedData.payload)
+  })
+
+  test('sign in a user', async () => {
+    const mockSignInUser: SignInUserInterface = {
+      email_address: 'user@example.com',
+      password: 'password123'
+    }
+    const mockUserSession: UserSessionInterface = {
+      refresh_token: 'refresh_token',
+      access_token: 'access_token',
+      issued_at: Date.now(),
+      expires_in: 3600,
+      expires_at: Date.now() + 3600 * 1000,
+      stream_token: 'stream_token',
+      user: null,
+      fcm: null,
+      client: {
+        client_id: 'client_id',
+        team_name: 'team_name'
+      }
+    }
+    mock.onPost(URLS.signInUser).reply(200, { payload: mockUserSession })
+
+    const result = await userInstance.signInUser(mockSignInUser)
+    expect(result).toEqual(mockUserSession)
   })
 
   test('updateProfile updates user profile', async () => {
