@@ -54,7 +54,7 @@ describe('Reward Service', () => {
     pagingCounter: 0
   }
 
-  it('should fetch rewards with pagination', async () => {
+  test('should fetch rewards with pagination', async () => {
     const params: PaginateParams = { page: 1 }
     mock.onGet(URLS.getRewards, { params }).reply(200, {
       payload: mockPaginatedRewards
@@ -64,7 +64,7 @@ describe('Reward Service', () => {
     expect(result).toEqual(mockPaginatedRewards)
   })
 
-  it('should fetch fan reward points', async () => {
+  test('should fetch fan reward points', async () => {
     const mockFanRewardPoints = {
       daily: { items: [mockRewardPoint], total: 1, page: 1, limit: 10 },
       continues: { items: [mockRewardPoint], total: 1, page: 1, limit: 10 }
@@ -77,7 +77,7 @@ describe('Reward Service', () => {
     expect(result).toEqual(mockFanRewardPoints)
   })
 
-  it('should reward on daily app opening', async () => {
+  test('should reward on daily app opening', async () => {
     mock.onPost(URLS.rewardOnDailyAppOpening).reply(200, {
       payload: mockRewardMetadata
     } as BasicResponseInterface<RewardMetadata>)
@@ -86,7 +86,7 @@ describe('Reward Service', () => {
     expect(result).toEqual(mockRewardMetadata)
   })
 
-  it('should reward based on time spent', async () => {
+  test('should reward based on time spent', async () => {
     mock.onPost(URLS.rewardOnTimeSpent).reply(200, {
       payload: mockRewardMetadata
     } as BasicResponseInterface<RewardMetadata>)
@@ -95,7 +95,7 @@ describe('Reward Service', () => {
     expect(result).toEqual(mockRewardMetadata)
   })
 
-  it('should reward based on shopping', async () => {
+  test('should reward based on shopping', async () => {
     mock.onPost(URLS.rewardOnShopping).reply(200, {
       payload: mockRewardMetadata
     } as BasicResponseInterface<RewardMetadata>)
@@ -104,7 +104,7 @@ describe('Reward Service', () => {
     expect(result).toEqual(mockRewardMetadata)
   })
 
-  it('should reward on live chat', async () => {
+  test('should reward on live chat', async () => {
     mock.onPost(URLS.rewardOnLiveChat).reply(200, {
       payload: mockRewardMetadata
     } as BasicResponseInterface<RewardMetadata>)

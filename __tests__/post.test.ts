@@ -183,14 +183,14 @@ describe('Post Class', () => {
     mock.reset()
   })
 
-  it('should fetch all posts', async () => {
+  test('should fetch all posts', async () => {
     mock.onGet(URLS.getPosts).reply(200, mockPaginateResponse)
 
     const response = await postService.getAll({ page: 1, filter_type: 'Recent' })
     expect(response).toEqual(mockPaginateResponse.payload)
   })
 
-  it('should fetch a post by ID', async () => {
+  test('should fetch a post by ID', async () => {
     const postId = '1'
     mock.onGet(URLS.getPost(postId)).reply(200, mockPostResponse)
 
@@ -198,7 +198,7 @@ describe('Post Class', () => {
     expect(response).toEqual(mockPostResponse.payload)
   })
 
-  it('should create a new post', async () => {
+  test('should create a new post', async () => {
     mock.onPost(URLS.createPost).reply(200, {
       ...mockPostResponse,
       metadata: mockRewardMetadata.payload
@@ -216,21 +216,21 @@ describe('Post Class', () => {
     expect(response).toEqual(mockRewardMetadata.payload)
   })
 
-  it('should unlike a post', async () => {
+  test('should unlike a post', async () => {
     mock.onPut(URLS.likeAndUnlikePost(reactOnPostPayload)).reply(200, mockRewardMetadata)
 
     const response = await postService.unlike(reactOnPostPayload)
     expect(response).toEqual(mockRewardMetadata.payload)
   })
 
-  it('should report a post', async () => {
+  test('should report a post', async () => {
     mock.onPost(URLS.reportPost).reply(200, { status: 200, payload: 'Report successful' })
 
     const response = await postService.report(reportPostPayload)
     expect(response).toEqual('Report successful')
   })
 
-  it('should delete a post', async () => {
+  test('should delete a post', async () => {
     mock
       .onDelete(URLS.deletePost({ id: '1' }))
       .reply(200, { status: 200, payload: 'Delete successful' })

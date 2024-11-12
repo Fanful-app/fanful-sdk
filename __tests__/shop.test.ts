@@ -16,7 +16,7 @@ describe('Shop Class', () => {
     mock.reset()
   })
 
-  it('should fetch a list of shops with the get method', async () => {
+  test('should fetch a list of shops with the get method', async () => {
     const mockResponse: BasicResponseInterface<ShopInterface> = {
       status: 200,
       message: 'Shops fetched successfully',
@@ -63,7 +63,7 @@ describe('Shop Class', () => {
     expect(result).toEqual(mockResponse.payload)
   })
 
-  it('should search shops with the search method', async () => {
+  test('should search shops with the search method', async () => {
     const mockSearchResponse: ShopResponse = {
       content: [
         {
@@ -108,7 +108,7 @@ describe('Shop Class', () => {
     expect(result).toEqual(mockSearchResponse)
   })
 
-  it('should handle empty search results', async () => {
+  test('should handle empty search results', async () => {
     const mockSearchResponse: ShopResponse = {
       content: [],
       totalPages: 0,

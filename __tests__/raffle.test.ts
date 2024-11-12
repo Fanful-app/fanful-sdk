@@ -17,7 +17,7 @@ describe('Raffle class', () => {
     mock.reset()
   })
 
-  it('should fetch a list of raffles with the get method', async () => {
+  test('should fetch a list of raffles with the get method', async () => {
     const mockResponse: BasicResponseInterface<PaginateResult<RaffleEntryInterface>> = {
       status: 200,
       message: 'Success',
@@ -64,7 +64,7 @@ describe('Raffle class', () => {
     expect(result).toEqual(mockResponse.payload)
   })
 
-  it('should join a raffle with the join method', async () => {
+  test('should join a raffle with the join method', async () => {
     const raffleId = 'raffle123'
     const mockResponse: BasicResponseInterface<RaffleEntryInterface> = {
       status: 200,
@@ -93,7 +93,7 @@ describe('Raffle class', () => {
     expect(result).toEqual(mockResponse.payload)
   })
 
-  it('should confirm a raffle win with the won method', async () => {
+  test('should confirm a raffle win with the won method', async () => {
     const raffleId = 'raffle123'
     const email_address = 'test@example.com'
     const mockResponse: BasicResponseInterface = {

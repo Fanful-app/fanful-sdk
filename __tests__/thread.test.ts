@@ -15,7 +15,7 @@ describe('Thread Class', () => {
     mock.reset()
   })
 
-  it('should fetch threads with the get method', async () => {
+  test('should fetch threads with the get method', async () => {
     const mockResponse: BasicResponseInterface<PaginateResult<CommentInterface>> = {
       status: 200,
       message: 'Threads fetched successfully',
@@ -66,7 +66,7 @@ describe('Thread Class', () => {
     expect(result).toEqual(mockResponse.payload)
   })
 
-  it('should like a thread with the like method', async () => {
+  test('should like a thread with the like method', async () => {
     const mockResponse: BasicResponseInterface = {
       status: 200,
       message: 'Thread liked successfully',
@@ -89,7 +89,7 @@ describe('Thread Class', () => {
     expect(result).toEqual(mockResponse.payload)
   })
 
-  it('should unlike a thread with the unlike method', async () => {
+  test('should unlike a thread with the unlike method', async () => {
     const mockResponse: BasicResponseInterface = {
       status: 200,
       message: 'Thread unliked successfully',
@@ -112,7 +112,7 @@ describe('Thread Class', () => {
     expect(result).toEqual(mockResponse.payload)
   })
 
-  it('should create a thread with the create method', async () => {
+  test('should create a thread with the create method', async () => {
     const mockResponse: BasicResponseInterface<CommentInterface> = {
       status: 200,
       message: 'Thread created successfully',
@@ -151,7 +151,7 @@ describe('Thread Class', () => {
     expect(result).toEqual(mockResponse.payload)
   })
 
-  it('should delete a thread with the delete method', async () => {
+  test('should delete a thread with the delete method', async () => {
     const mockResponse: BasicResponseInterface<CommentInterface> = {
       status: 200,
       message: 'Thread deleted successfully',

@@ -16,7 +16,7 @@ describe('Notification Class', () => {
     mock.reset()
   })
 
-  it('should fetch notifications list', async () => {
+  test('should fetch notifications list', async () => {
     const mockNotifications: PaginateResult<NotificationInterface> = {
       docs: [
         {
@@ -51,7 +51,7 @@ describe('Notification Class', () => {
     expect(notifications).toEqual(mockNotifications)
   })
 
-  it('should mark a notification as seen', async () => {
+  test('should mark a notification as seen', async () => {
     const mockNotificationId = '1'
     const mockResponse = { success: true }
 
@@ -63,7 +63,7 @@ describe('Notification Class', () => {
     expect(result).toEqual(mockResponse)
   })
 
-  it('should mark all notifications as seen', async () => {
+  test('should mark all notifications as seen', async () => {
     const mockResponse = { success: true }
 
     mock.onPost(URLS.markAllNotification).reply(200, {
@@ -74,7 +74,7 @@ describe('Notification Class', () => {
     expect(result).toEqual(mockResponse)
   })
 
-  it('should register a push notification', async () => {
+  test('should register a push notification', async () => {
     const mockPayload: FcmTokenInterface = {
       device_id: 'device123',
       is_active: true,

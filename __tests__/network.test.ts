@@ -19,7 +19,7 @@ describe('createNetwork', () => {
 
   beforeEach(() => {
     mock = new MockAdapter(axios)
-    network = createNetwork(options)
+    // network = createNetwork(options)
   })
 
   afterEach(() => {
@@ -27,15 +27,30 @@ describe('createNetwork', () => {
     jest.clearAllMocks()
   })
 
+  it('should include all required parameters in options', () => {
+    expect(options).toHaveProperty('client_id')
+    expect(options).toHaveProperty('secrete_key')
+    expect(options).toHaveProperty('mode')
+  })
+
   it('should set baseURL correctly based on mode', () => {
+    const network = createNetwork(options)
     expect(network.defaults.baseURL).toBe(
       'https://phoenix-fanful-2d74e42e73ee.herokuapp.com/api/v1'
     )
   })
 
+  it('should return an axios instance', () => {
+    const network = createNetwork(options)
+    expect(network).toHaveProperty('get')
+    expect(network).toHaveProperty('post')
+    expect(network).toHaveProperty('interceptors')
+  })
+
   it('should add custom headers from FanfulSdkOptions in requests', async () => {
     mock.onGet('/test').reply(200, { success: true })
 
+    const network = createNetwork(options)
     const response = await network.get('/test')
 
     expect(response.data).toEqual({ success: true })
@@ -49,6 +64,7 @@ describe('createNetwork', () => {
   it('should call reportError and reject on request error', async () => {
     mock.onGet('/test').reply(400, { message: 'Bad Request' })
 
+    const network = createNetwork(options)
     try {
       await network.get('/test')
     } catch (error) {
@@ -59,6 +75,7 @@ describe('createNetwork', () => {
   it('should call reportError and reject on response error', async () => {
     mock.onGet('/test').reply(500, { message: 'Internal Server Error' })
 
+    const network = createNetwork(options)
     try {
       await network.get('/test')
     } catch (error) {
@@ -69,9 +86,34 @@ describe('createNetwork', () => {
   it('should not call reportError on a successful response', async () => {
     mock.onGet('/test').reply(200, { success: true })
 
+    const network = createNetwork(options)
     const response = await network.get('/test')
 
     expect(response.data).toEqual({ success: true })
     expect(reportError).not.toHaveBeenCalled()
+  })
+
+  it('should call reportError and reject when a network request error occurs', async () => {
+    const network = createNetwork(options)
+
+    mock.onGet('/test').networkError()
+
+    try {
+      await network.get('/test')
+    } catch (error) {
+      expect(reportError).toHaveBeenCalled()
+    }
+  })
+
+  it('should call reportError and reject on 404 Not Found error', async () => {
+    const network = createNetwork(options)
+    mock.onGet('/test').reply(404, { message: 'Not Found' })
+
+    try {
+      await network.get('/test')
+    } catch (error) {
+      expect(reportError).toHaveBeenCalledWith({ message: 'Not Found' })
+      expect(error).toEqual({ message: 'Not Found' })
+    }
   })
 })

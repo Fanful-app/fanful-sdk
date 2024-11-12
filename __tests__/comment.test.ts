@@ -22,7 +22,7 @@ describe('Comment class', () => {
     mock.reset()
   })
 
-  it('should fetch a list of comments with the get method', async () => {
+  test('should fetch a list of comments with the get method', async () => {
     const mockResponse: BasicResponseInterface<PaginateResult<CommentInterface>> = {
       status: 200,
       message: 'Success',
@@ -53,7 +53,7 @@ describe('Comment class', () => {
     expect(result).toEqual(mockResponse.payload)
   })
 
-  it('should create a comment with the create method', async () => {
+  test('should create a comment with the create method', async () => {
     const mockComment: CommentInterface = {
       post_id: 'post123',
       thread_id: null,
@@ -99,7 +99,7 @@ describe('Comment class', () => {
     expect(result).toEqual({ payload: mockResponse.payload, metadata: mockResponse.metadata })
   })
 
-  it('should report a comment with the report method', async () => {
+  test('should report a comment with the report method', async () => {
     const mockResponse: BasicResponseInterface = {
       status: 200,
       message: 'Comment reported successfully',
@@ -118,7 +118,7 @@ describe('Comment class', () => {
     expect(result).toBeNull()
   })
 
-  it('should delete a comment with the delete method', async () => {
+  test('should delete a comment with the delete method', async () => {
     const mockResponse: BasicResponseInterface = {
       status: 200,
       message: 'Comment deleted successfully',
@@ -137,7 +137,7 @@ describe('Comment class', () => {
     expect(result).toBeNull()
   })
 
-  it('should like a comment with the like method', async () => {
+  test('should like a comment with the like method', async () => {
     const mockResponse: BasicResponseInterface<RewardMetadata> = {
       status: 200,
       message: 'Comment liked successfully',
@@ -163,7 +163,7 @@ describe('Comment class', () => {
     expect(result).toEqual(mockResponse.payload)
   })
 
-  it('should unlike a comment with the unlike method', async () => {
+  test('should unlike a comment with the unlike method', async () => {
     const mockResponse: BasicResponseInterface<RewardMetadata> = {
       status: 200,
       message: 'Comment unliked successfully',

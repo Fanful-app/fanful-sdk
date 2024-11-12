@@ -56,7 +56,7 @@ describe('Auth Class', () => {
     }
   }
 
-  it('should sign in a user', async () => {
+  test('should sign in a user', async () => {
     mock.onPost(URLS.signInUser).reply(200, {
       payload: mockUserSession
     })
@@ -65,7 +65,7 @@ describe('Auth Class', () => {
     expect(result).toEqual(mockUserSession)
   })
 
-  it('should sign up a user', async () => {
+  test('should sign up a user', async () => {
     mock.onPost(URLS.signUpUser).reply(200, {
       payload: mockUserSession
     })
@@ -74,7 +74,7 @@ describe('Auth Class', () => {
     expect(result).toEqual(mockUserSession)
   })
 
-  it('should verify user OTP', async () => {
+  test('should verify user OTP', async () => {
     mock.onPost(URLS.verifyUserOtp).reply(200, {
       payload: mockUserSession
     })
@@ -83,7 +83,7 @@ describe('Auth Class', () => {
     expect(result).toEqual(mockUserSession)
   })
 
-  it('should resend OTP', async () => {
+  test('should resend OTP', async () => {
     const mockUser: UserInterface = {
       id: '1',
       email_address: 'user@example.com',
@@ -115,7 +115,7 @@ describe('Auth Class', () => {
     expect(result).toEqual(mockUser)
   })
 
-  it('should handle forgot password request', async () => {
+  test('should handle forgot password request', async () => {
     const mockUser: UserInterface = {
       id: '1',
       email_address: 'user@example.com',
@@ -148,7 +148,7 @@ describe('Auth Class', () => {
     expect(result).toEqual(mockUser)
   })
 
-  it('should log out a user', async () => {
+  test('should log out a user', async () => {
     const mockResponse = { success: true }
 
     mock.onPost(URLS.logoutUser).reply(200, {
@@ -159,7 +159,7 @@ describe('Auth Class', () => {
     expect(result).toEqual(mockResponse)
   })
 
-  it('should refresh access token', async () => {
+  test('should refresh access token', async () => {
     const refreshPayload = { refresh_token: 'refresh_token' }
 
     mock.onPost(URLS.refreshAccessToken).reply(200, {
@@ -170,7 +170,7 @@ describe('Auth Class', () => {
     expect(result).toEqual(mockUserSession)
   })
 
-  it('should reset password', async () => {
+  test('should reset password', async () => {
     const mockUser: UserInterface = {
       id: '1',
       email_address: 'user@example.com',

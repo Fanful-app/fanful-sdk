@@ -31,14 +31,14 @@ describe('getCountries Method', () => {
     mock.restore()
   })
 
-  it('should return a list of countries successfully', async () => {
+  test('should return a list of countries successfully', async () => {
     mock.onGet(URLS.getCountries).reply(200, { payload: mockCountries })
 
     const countries = await sdk.getCountries()
     expect(countries).toEqual(mockCountries)
   }, 10000)
 
-  it('should handle errors correctly if the request fails', async () => {
+  test('should handle errors correctly if the request fails', async () => {
     mock.onGet(URLS.getCountries).reply(500, { message: 'Internal Server Error' })
   })
 })
