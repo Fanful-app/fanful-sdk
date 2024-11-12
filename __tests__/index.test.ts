@@ -23,14 +23,6 @@ describe('getCountries Method', () => {
     }
   ]
 
-  afterEach(() => {
-    mock.reset()
-  })
-
-  afterAll(() => {
-    mock.restore()
-  })
-
   test('should return a list of countries successfully', async () => {
     mock.onGet(URLS.getCountries).reply(200, { payload: mockCountries })
 

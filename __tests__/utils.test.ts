@@ -1,6 +1,16 @@
 import { omit, getAssetMeta, reportError } from '../src/helper/utils'
 
 describe('omit', () => {
+  let consoleErrorSpy: jest.SpyInstance
+
+  beforeEach(() => {
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
+  })
+
+  afterEach(() => {
+    consoleErrorSpy.mockRestore()
+  })
+
   test('should return a new object without the omitted keys', () => {
     const originalObject = { a: 1, b: 2, c: 3 }
     const result = omit(originalObject, 'a', 'c')
@@ -65,53 +75,38 @@ describe('getAssetMeta', () => {
 })
 
 describe('reportError', () => {
-  const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
+  let consoleErrorSpy: jest.SpyInstance;
+
+  beforeEach(() => {
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+  });
 
   afterEach(() => {
-    consoleErrorSpy.mockClear()
-  })
+    consoleErrorSpy.mockRestore();
+  });
 
-  afterAll(() => {
-    consoleErrorSpy.mockRestore()
-  })
+  it('should log an Error object to console.error', () => {
+    const error = new Error('Test error');
 
-  test('should use window.reportError if available in the browser', () => {
-    Object.defineProperty(global, 'window', {
-      value: { reportError: jest.fn() },
-      writable: true
-    })
+    reportError(error);
 
-    const error = new Error('Test error')
-    reportError(error)
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      'Reported Error to our external service:', 
+      error
+    );
+  });
 
-    expect(window.reportError).toHaveBeenCalledWith(error)
-  })
+  it('should log a string error as an Error object to console.error', () => {
+    const errorMessage = 'Test string error';
 
-  test('should fallback to console.error if window.reportError is not available', () => {
-    Object.defineProperty(global, 'window', {
-      value: {},
-      writable: true
-    })
+    reportError(errorMessage);
 
-    const error = new Error('Test error')
-    reportError(error)
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      'Reported Error to our external service:',
+      expect.any(Error) 
+    );
 
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Error reported:', error.message)
-  })
-
-  test('should log error to console.error with (Node) context in Node environment', () => {
-    delete (global as any).window
-
-    const error = new Error('Test error')
-    reportError(error)
-
-    // expect(consoleErrorSpy).toHaveBeenCalledWith('Error reported (Node):', 'Test error')
-  })
-
-  test('should handle errors without a message property', () => {
-    const error = {} as Error
-    reportError(error)
-
-    // expect(consoleErrorSpy).toHaveProperty('')
-  })
-})
+    const loggedError = consoleErrorSpy.mock.calls[0][1] as Error;
+    expect(loggedError.message).toBe(errorMessage);
+  });
+});

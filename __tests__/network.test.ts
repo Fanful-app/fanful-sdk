@@ -116,4 +116,24 @@ describe('createNetwork', () => {
       expect(error).toEqual({ message: 'Not Found' })
     }
   })
+
+  it('should call reportError and throw the error on request error', async () => {
+    const errorResponse = { message: 'Request error', name: 'error' }
+    const network = createNetwork(options)
+    mock.onGet('/api/v1/test-endpoint').reply(400, errorResponse)
+
+    await expect(network.get('/test-endpoint')).rejects.toThrowError(errorResponse)
+
+    expect(reportError).toHaveBeenCalledWith(errorResponse)
+  })
+
+  it('should call reportError and throw the error on response error', async () => {
+    const errorResponse = { message: 'Response error', name: 'error' }
+    const network = createNetwork(options)
+    mock.onGet('/api/v1/test-endpoint').reply(500, errorResponse)
+
+    await expect(network.get('/test-endpoint')).rejects.toThrowError(errorResponse)
+
+    expect(reportError).toHaveBeenCalledWith(errorResponse)
+  })
 })

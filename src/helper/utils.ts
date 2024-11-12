@@ -37,6 +37,7 @@ export function getAssetMeta(file: string) {
 export const reportError = (error: Error | string): void => {
   // Report error to external service like sentry or firebase crashlytics
   // crashlytics().recordError(error instanceof Error ? error : new Error(error));
+  const errorObject = error instanceof Error ? error : new Error(error)
 
-  console.error('Reported Error to our external service:', error)
+  console.error('Reported Error to our external service:', errorObject)
 }
