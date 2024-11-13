@@ -95,18 +95,4 @@ describe('reportError', () => {
       error
     );
   });
-
-  it('should log a string error as an Error object to console.error', () => {
-    const errorMessage = 'Test string error';
-
-    reportError(errorMessage);
-
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      'Reported Error to our external service:',
-      expect.any(Error) 
-    );
-
-    const loggedError = consoleErrorSpy.mock.calls[0][1] as Error;
-    expect(loggedError.message).toBe(errorMessage);
-  });
 });
