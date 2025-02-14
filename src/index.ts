@@ -25,8 +25,8 @@ export default class FanfulSdk {
   private static network: AxiosInstance
 
   constructor(options: FanfulSdkOptions) {
-    if (options.client_id || options.secrete_key) {
-      throw new Error('client_id and secrete_key is needed to use SDK')
+    if (options.client_id) {
+      throw new Error('client_id is needed to use SDK')
     }
 
     const instance = createNetwork(options)
@@ -52,5 +52,13 @@ export default class FanfulSdk {
     )
 
     return data.payload
+  }
+
+  /**
+   * @method setJwtToken
+   * @returns {void} Sets the jwt_token for the SDK
+   */
+  public setJwtToken = async (jwt_token: string): Promise<void> => {
+    FanfulSdk.network.defaults.headers.common['Authorization'] = jwt_token
   }
 }

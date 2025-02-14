@@ -3,8 +3,8 @@ import { FanfulSdkOptions } from '@typings/global'
 import { reportError } from './utils'
 
 const envconfig: Record<NonNullable<FanfulSdkOptions['mode']>, string> = {
-  test: 'https://phoenix-fanful-2d74e42e73ee.herokuapp.com',
-  production: 'https://fanful-backend-33d52a64526c.herokuapp.com'
+  test: 'https://fanful-app-e67ec6957e56.herokuapp.com',
+  production: 'https://fanful-app-e67ec6957e56.herokuapp.com'
 }
 
 export const createNetwork = (params: FanfulSdkOptions) => {
@@ -14,8 +14,9 @@ export const createNetwork = (params: FanfulSdkOptions) => {
   // Add a request interceptor
   network.interceptors.request.use(
     async (config) => {
+      config.headers.setAuthorization(params.jwt_token || '')
       config.headers.set('x-fanful-client-id', params.client_id)
-      config.headers.set('x-fanful-secrete-key', params.secrete_key)
+      config.headers.set('x-fanful-secret-key', params.secret_key)
       return config
     },
     (error: AxiosError) => {

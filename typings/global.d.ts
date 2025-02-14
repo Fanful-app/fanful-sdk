@@ -34,12 +34,12 @@ export type RecursivePartial<T> = {
 
 export type FanfulSdkOptions = {
   client_id: string
-  secrete_key: string
+  jwt_token?: string
+  secret_key?: string
   mode?: 'test' | 'production'
 }
 
 export interface PaginateParams extends Pick<PaginateResult, 'page'> {}
-
 
 declare global {
   var mock: MockAdapter
