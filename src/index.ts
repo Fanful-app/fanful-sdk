@@ -3,6 +3,7 @@ import { AxiosInstance } from 'axios'
 import User from './user'
 import Auth from './auth'
 import Post from './post'
+import Admin from './admin'
 import Raffle from './raffle'
 import Thread from './thread'
 import Reward from './reward'
@@ -17,6 +18,7 @@ export default class FanfulSdk {
   public user: User
   public auth: Auth
   public post: Post
+  public admin: Admin
   public raffle: Raffle
   public thread: Thread
   public reward: Reward
@@ -35,6 +37,7 @@ export default class FanfulSdk {
     this.user = new User(instance)
     this.auth = new Auth(instance)
     this.post = new Post(instance)
+    this.admin = new Admin(instance)
     this.raffle = new Raffle(instance)
     this.thread = new Thread(instance)
     this.reward = new Reward(instance)
