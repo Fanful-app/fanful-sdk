@@ -68,5 +68,21 @@ export const URLS = {
     `/threads/${params.id}/${params.has_liked ? 'like' : 'unlike'}`,
   createThread: (params: CreateCommentInterface) => `/comments/${params.thread_id}/thread`,
   deleteThread: (params: Pick<ReactOnCommentInterface, 'id' | 'post_id' | 'thread_id'>) =>
-    `/comments/${params.id}`
+    `/comments/${params.id}`,
+  getClients: '/admin/clients',
+  getMetrics: '/admin/metrics',
+  createClient: '/admin/clients',
+  deleteClient: '/admin/clients',
+  getCountryMetrics: '/admin/country-metrics',
+  getSubscriptionMetrics: '/admin/subscription-metrics',
+  updateSubscriptionConfig: '/admin/subscription-config',
+  getReportedUsers: '/admin/reported-users',
+  resolveReportedUser: '/admin/reported-users',
+  suspendReportedUser: '/admin/reported-users',
+  getReportedContents: '/admin/reported-contents',
+  keepReportedContent: '/admin/reported-contents',
+  deleteReportedContent: '/admin/reported-contents',
+  getLoyalizeStores: '/admin/loyalize-stores',
+  getRankedEntries: '/admin/ranked-entries',
+  whiteLabelClientApp: (id: string) => `/admin/clients/${id}/create-app`
 }
