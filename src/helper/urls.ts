@@ -1,9 +1,12 @@
-import { PaginateParams } from '@typings/global'
+import { ClientInterface } from '@typings/client'
+import { DEFAULT_PAGINATION, PaginateParams } from '@typings/global'
 import {
   CreateCommentInterface,
   ReactOnCommentInterface,
   ReactOnPostInterface
 } from '@typings/post'
+import { RaffleParamInterface } from '@typings/reward'
+import { CreateShop } from '@typings/shop'
 import {
   BlockProfileInterface,
   FollowAndUnFollowProfileInterface,
@@ -69,20 +72,52 @@ export const URLS = {
   createThread: (params: CreateCommentInterface) => `/comments/${params.thread_id}/thread`,
   deleteThread: (params: Pick<ReactOnCommentInterface, 'id' | 'post_id' | 'thread_id'>) =>
     `/comments/${params.id}`,
-  getClients: '/admin/clients',
+  getClients: (payload: PaginateParams) =>
+    `admin/clients?limit=${payload?.page || DEFAULT_PAGINATION}`,
   getMetrics: '/admin/metrics',
   createClient: '/admin/clients',
-  deleteClient: '/admin/clients',
+  deleteClient: (payload: Pick<ClientInterface, 'client_id'>) =>
+    `/admin/clients?client_id=${payload.client_id}`,
   getCountryMetrics: '/admin/country-metrics',
   getSubscriptionMetrics: '/admin/subscription-metrics',
-  updateSubscriptionConfig: '/admin/subscription-config',
-  getReportedUsers: '/admin/reported-users',
-  resolveReportedUser: '/admin/reported-users',
-  suspendReportedUser: '/admin/reported-users',
-  getReportedContents: '/admin/reported-contents',
-  keepReportedContent: '/admin/reported-contents',
-  deleteReportedContent: '/admin/reported-contents',
-  getLoyalizeStores: '/admin/loyalize-stores',
+  updateSubscriptionConfig: (client_id: string) =>
+    `/admin/subscription-config/?client_id=${client_id}`,
+  getReportedUsers: (payload: PaginateParams) =>
+    `/admin/reported-users?limit=${payload.page || DEFAULT_PAGINATION}`,
+  resolveReportedUser: (payload: { user_id: string } & Pick<ClientInterface, 'id'>) =>
+    `/admin/reported-users?client_id=${payload.id}&report_id=${payload.user_id}`,
+  suspendReportedUser: (payload: { user_id: string } & Pick<ClientInterface, 'id'>) =>
+    `/admin/reported-users?client_id=${payload.id}&report_id=${payload.user_id}`,
+  getReportedContents: (payload: PaginateParams) =>
+    `/admin/reported-contents?limit=${payload.page || DEFAULT_PAGINATION}`,
+  keepReportedContent: (payload: { content_id: string } & Pick<ClientInterface, 'id'>) =>
+    `/admin/reported-contents?report_id=${payload.content_id}&client_id=${payload.id}`,
+  deleteReportedContent: (payload: { content_id: string } & Pick<ClientInterface, 'id'>) =>
+    `/admin/reported-contents?report_id=${payload.content_id}&client_id=${payload.id}`,
+  getLoyalizeStores: (payload: { page?: number; size?: number }, client_id: string) =>
+    `/admin/loyalize-stores?page=${payload.page || 0}&limit=${
+      payload.size || 50
+    }&client_id=${client_id}`,
   getRankedEntries: '/admin/ranked-entries',
-  whiteLabelClientApp: (id: string) => `/admin/clients/${id}/create-app`
+  whiteLabelClientApp: (id: string) => `/admin/clients/${id}/create-app`,
+  getClient: (id: string) => `/clients?client_id=${id}`,
+  getRaffleParticipants: (payload: PaginateParams, raffle_id: string, client_id: string) =>
+    `/clients/raffle/participants?page=${
+      payload.page || 0
+    }&raffle_id=${raffle_id}&client_id=${client_id}`,
+  exportClientUsers: (client_id: string) => `/clients/export-users?client_id=${client_id}`,
+  getClientUsers: (payload: PaginateParams, client_id: string) =>
+    `/clients/users?limit=${payload?.page || DEFAULT_PAGINATION}&client_id=${client_id}`,
+  updateClient: (id: string) => `/clients/${id}/update-credentials`,
+  createRaffle: (client_id: string) => `/clients/raffles/?client_id=${client_id}`,
+  updateRaffle: (id: string) => `/clients/raffles/?raffle_id=${id}`,
+  deleteRaffle: (payload: RaffleParamInterface) =>
+    `/clients/raffles?raffle_id=${payload.id}&client_id=${payload.client_id}`,
+  removeShop: (payload: { id: string; shop_id: string }) =>
+    `/clients/shops?client_id=${payload.id}&shop_id=${payload.shop_id}`,
+  addShop: (client_id: string) => `/clients/shops?client_id=${client_id}`,
+  updateShop: (payload: CreateShop) => `/clients/shops?shop_id=${payload.id}`,
+  updateFanPoints: (client_id: string) => `/clients/fan-point?client_id=${client_id}`,
+  updateCredenntials: (client_id: string) => `/clients/credentials?client_id=${client_id}`,
+  updatePendingSocial: (id: string) => `/clients/pending-social?client_id=${id}`
 }

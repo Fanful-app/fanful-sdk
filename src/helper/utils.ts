@@ -41,3 +41,25 @@ export const reportError = (error: Error | string): void => {
 
   console.error('Reported Error to our external service:', errorObject)
 }
+
+export const createFormDataFromPayload = (payload: Record<string, unknown>) => {
+  const formData = new FormData()
+
+  Object.entries(payload).forEach(([key, value]) => {
+    if (value instanceof File) {
+      formData.append(key, value)
+    } else if (Array.isArray(value)) {
+      value.forEach((item, index) => {
+        formData.append(`${key}[${index}]`, item)
+      })
+    } else if (typeof value === 'object' && value !== null) {
+      Object.entries(value).forEach(([subKey, subValue]) => {
+        formData.append(`${key}[${subKey}]`, subValue as never)
+      })
+    } else {
+      formData.append(key, value as never)
+    }
+  })
+
+  return formData
+}
