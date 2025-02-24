@@ -3,6 +3,8 @@
   "version": "0.0.0-development",
   "description": "A public SDK for Fanful clients",
   "main": "./dist/index.js",
+  "module": "./dist/bundle.esm.js",
+  "browser": "./dist/bundle.min.js",
   "bin": {
     "cli": "bin/cli.js"
   },
