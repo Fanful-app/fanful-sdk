@@ -75,11 +75,22 @@ export default class Admin {
 
   /**
    * @method put
-   * @param {string} id
+   * @param {SetUpConfigInterface} payload
    * @returns {Promise<any>} white label a client app
    */
-  public whiteLabelClientApp = async ({ id }: { id: string }): Promise<any> => {
-    const { data } = await Admin.network.post<any>(URLS.whiteLabelClientApp(id))
+  public whiteLabelClientApp = async (payload: SetUpConfigInterface): Promise<ClientInterface> => {
+    const { id, ...restParams } = payload
+
+    const formData = createFormDataFromPayload(restParams)
+    const { data } = await Admin.network.post<BasicResponseInterface<ClientInterface>>(
+      URLS.whiteLabelClientApp(id as string),
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+    )
 
     return data.payload
   }
@@ -153,12 +164,14 @@ export default class Admin {
   /**
    * @method delete
    * @param {{ user_id: string } & Pick<ClientInterface, "id">}
-   * @returns {Promise<any>} delete a reported user
+   * @returns {Promise<ClientInterface>} delete a reported user
    */
   public suspendReportedUser = async (
     payload: { user_id: string } & Pick<ClientInterface, 'id'>
-  ): Promise<any> => {
-    const { data } = await Admin.network.delete<any>(URLS.suspendReportedUser(payload))
+  ): Promise<ClientInterface> => {
+    const { data } = await Admin.network.delete<BasicResponseInterface<ClientInterface>>(
+      URLS.suspendReportedUser(payload)
+    )
 
     return data.payload
   }
