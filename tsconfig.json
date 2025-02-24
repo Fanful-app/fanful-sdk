@@ -6,6 +6,7 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "strict": true,
+    "declaration": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "paths": {
