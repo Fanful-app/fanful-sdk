@@ -51,8 +51,10 @@ export default class Admin {
    */
   public deleteClient = async (
     payload: Pick<ClientInterface, 'client_id'>
-  ): Promise<BasicResponseInterface<ClientInterface>> => {
-    const { data } = await Admin.network.delete<any>(URLS.deleteClient(payload))
+  ): Promise<ClientInterface> => {
+    const { data } = await Admin.network.delete<BasicResponseInterface<ClientInterface>>(
+      URLS.deleteClient(payload)
+    )
 
     return data.payload
   }
