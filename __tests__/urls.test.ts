@@ -1,10 +1,6 @@
 import { URLS } from '../src/helper/urls'
 import { PaginateParams } from '../typings/global'
-import {
-  CreateCommentInterface,
-  ReactOnCommentInterface,
-  ReactOnPostInterface
-} from '../typings/post'
+import { CreateCommentInterface, ReactOnCommentInterface } from '../typings/post'
 import {
   BlockProfileInterface,
   FollowAndUnFollowProfileInterface,

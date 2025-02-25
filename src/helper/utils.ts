@@ -1,3 +1,5 @@
+import { BasicResponseInterface, PaginateResult } from '@typings/global'
+
 /**
  * @description Utility function to omit specified keys from an object.
  * @param {T} obj - The original object.
@@ -62,4 +64,33 @@ export const createFormDataFromPayload = (payload: Record<string, unknown>) => {
   })
 
   return formData
+}
+
+/**
+ *
+ * @description creates a mock response basic response
+ * @function createMockResponse
+ * @returns {BasicResponseInterface<PaginateResult<T>>}
+ */
+
+export function createMockResponse<T = any>(data?: T[]): BasicResponseInterface<PaginateResult<T>> {
+  return {
+    status: 200,
+    message: 'Threads fetched successfully',
+    payload: {
+      data: data || null,
+      total: data ? data.length : 0,
+      per_page: 10,
+      current_page: 1,
+      docs: [],
+      limit: 0,
+      offset: 0,
+      totalDocs: data ? data.length : 0,
+      totalPages: data ? Math.ceil(data.length / 10) : 0,
+      hasPrevPage: false,
+      hasNextPage: false,
+      pagingCounter: 0
+    },
+    metadata: null
+  }
 }

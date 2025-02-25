@@ -13,11 +13,13 @@ import { Country } from '@typings/user'
 import Notification from './notification'
 import { createNetwork } from '@app/helper/network'
 import { FanfulSdkOptions, BasicResponseInterface } from '@typings/global'
+import Shop from './shop'
 
 export default class FanfulSdk {
   public user: User
   public auth: Auth
   public post: Post
+  public shops: Shop
   public admin: Admin
   public raffle: Raffle
   public thread: Thread
@@ -37,6 +39,7 @@ export default class FanfulSdk {
     this.user = new User(instance)
     this.auth = new Auth(instance)
     this.post = new Post(instance)
+    this.shops = new Shop(instance)
     this.admin = new Admin(instance)
     this.raffle = new Raffle(instance)
     this.thread = new Thread(instance)
