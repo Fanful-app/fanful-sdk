@@ -20,10 +20,10 @@ import {
   MetricsInterface,
   SubscribersMetricsInterface
 } from '@typings/metrics'
-import { ReportInterface, UserInterface } from '@typings/user'
+import { ReportInterface, UserInterface } from '../typings/user'
 import { createFormDataFromPayload, omit } from './helper/utils'
-import { ParticipantList, RaffleInterface, RaffleParamInterface } from '@typings/reward'
-import { CreateShop } from '@typings/shop'
+import { ParticipantList, RaffleInterface, RaffleParamInterface } from '../typings/reward'
+import { CreateShop } from '../typings/shop'
 
 export default class Admin {
   private static network: AxiosInstance

@@ -4,7 +4,7 @@ import { URLS } from '../src/helper/urls'
 import type { PaginateParams } from '../typings/global'
 import { ClientInterface } from '../typings/client'
 import { createMockResponse } from '../src/helper/utils'
-import { mockClientsData } from './mocks/client'
+import { mockClientData, mockClientsData } from './mocks/client'
 
 describe('Admin Class', () => {
   let adminService: Admin
@@ -26,5 +26,20 @@ describe('Admin Class', () => {
     const result = await adminService.clients(params)
 
     expect(result).toEqual(mockResponse.payload)
+  })
+
+  test('should delete a specific client', async () => {
+    // const mockAxiosDelete = jest.fn().mockResolvedValue({
+    //   data: {
+    //     payload: mockClientsData
+    //   }
+    // })
+    const payload: Pick<ClientInterface, 'client_id'> = { client_id: 'client123' }
+    const result = await adminService.deleteClient(payload)
+    // const networkSpy = jest.spyOn(Admin.network, 'delete').mockImplementation(mockAxiosDelete)
+
+    expect(result).toEqual(mockClientData)
+
+    // expect(networkSpy).toHaveBeenCalledWith(URLS.deleteClient({ client_id: 'client123' }))
   })
 })

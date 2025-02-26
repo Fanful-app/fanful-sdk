@@ -29,7 +29,8 @@ export default {
     resolve(),
     commonjs(),
     typescript({
-      tsconfig: './tsconfig.json'
+      tsconfig: './tsconfig.json',
+      emitDeclarationOnly: true
     }),
     terser(),
     json(),
