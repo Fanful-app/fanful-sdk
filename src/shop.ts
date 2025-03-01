@@ -1,5 +1,5 @@
-import { BasicResponseInterface } from '@typings/global'
-import { ShopInterface, ShopResponse } from '@typings/shop'
+import { BasicResponseInterface } from '../types/index'
+import { ShopInterface, ShopResponse } from '../types/index'
 import { AxiosInstance } from 'axios'
 import { URLS } from './helper/urls'
 

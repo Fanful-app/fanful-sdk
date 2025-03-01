@@ -3,16 +3,16 @@ import {
   PaginateParams,
   PaginateResult,
   RewardMetadata
-} from '@typings/global'
+} from '../types/index'
 import {
   CreatePostInterface,
   PostFilterInterface,
   PostInterface,
   ReactOnPostInterface
-} from '@typings/post'
+} from '../types/index'
 import { AxiosInstance } from 'axios'
 import { URLS } from './helper/urls'
-import { ReportInterface } from '@typings/user'
+import { ReportInterface } from '../types/index'
 
 export default class Post {
   private static network: AxiosInstance

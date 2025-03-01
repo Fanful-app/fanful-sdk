@@ -1,5 +1,5 @@
-import { BasicResponseInterface, PaginateParams, PaginateResult } from '@typings/global'
-import { RaffleEntryInterface, RaffleFilterInterface } from '@typings/reward'
+import { BasicResponseInterface, PaginateParams, PaginateResult } from '../types/index'
+import { RaffleEntryInterface, RaffleFilterInterface } from '../types/index'
 import { AxiosInstance } from 'axios'
 import { URLS } from './helper/urls'
 

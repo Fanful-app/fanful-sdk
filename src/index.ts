@@ -9,10 +9,10 @@ import Thread from './thread'
 import Reward from './reward'
 import Comment from './comment'
 import { URLS } from '@app/helper/urls'
-import { Country } from '@typings/user'
+import { Country } from '../types/index'
 import Notification from './notification'
 import { createNetwork } from '@app/helper/network'
-import { FanfulSdkOptions, BasicResponseInterface } from '@typings/global'
+import { FanfulSdkOptions, BasicResponseInterface } from '../types/index'
 import Shop from './shop'
 
 export default class FanfulSdk {

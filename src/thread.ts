@@ -1,5 +1,5 @@
-import { BasicResponseInterface, PaginateParams, PaginateResult } from '@typings/global'
-import { CommentInterface, CreateCommentInterface, ReactOnCommentInterface } from '@typings/post'
+import { BasicResponseInterface, PaginateParams, PaginateResult } from '../types/index'
+import { CommentInterface, CreateCommentInterface, ReactOnCommentInterface } from '../types/index'
 import { AxiosInstance } from 'axios'
 import { URLS } from './helper/urls'
 import { omit } from './helper/utils'

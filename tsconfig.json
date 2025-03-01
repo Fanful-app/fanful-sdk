@@ -6,17 +6,18 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "strict": true,
+    "rootDir": "./src",
     "declaration": true,
     "skipLibCheck": true,
-    "sourceMap": true,
     "esModuleInterop": true,
+    // "declarationDir": "./dist/src",
+    "typeRoots": ["./node_modules/@types", "./types"],
     "paths": {
       "@app/*": ["src/*"],
-      "@typings/*": ["typings/*"],
-      "axios": ["node_modules/axios/index.d.ts"]
+      "@typings/*": ["typings/*"]
     }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "types/types.d.ts"],
   "exclude": ["node_modules", "dist"],
   "ts-node": {
     "require": ["tsconfig-paths/register"]

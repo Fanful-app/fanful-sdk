@@ -3,11 +3,11 @@ import {
   PaginateParams,
   PaginateResult,
   RewardMetadata
-} from '@typings/global'
-import { CommentInterface, CreateCommentInterface, ReactOnCommentInterface } from '@typings/post'
+} from '../types/index'
+import { CommentInterface, CreateCommentInterface, ReactOnCommentInterface } from '../types/index'
 import { AxiosInstance } from 'axios'
 import { URLS } from './helper/urls'
-import { ReportCommentInterface } from '@typings/user'
+import { ReportCommentInterface } from '../types/index'
 
 export default class Comment {
   private static network: AxiosInstance

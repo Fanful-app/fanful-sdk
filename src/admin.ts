@@ -5,25 +5,26 @@ import {
   ClientInterface,
   CreateClientInterface,
   HandleInterface,
-  SetUpConfigInterface,
   StoreInterface,
   SubscriptionInterface
-} from '../typings/client'
-import {
-  BasicResponseInterface,
-  PaginateParams,
-  PaginateResult,
-  PaginateStoreResult
-} from '@typings/global'
+} from '../types/index'
+
 import {
   CountryMetricsInterface,
   MetricsInterface,
   SubscribersMetricsInterface
-} from '@typings/metrics'
-import { ReportInterface, UserInterface } from '../typings/user'
+} from '../types/index'
+import { ReportInterface, UserInterface } from '../types/index'
 import { createFormDataFromPayload, omit } from './helper/utils'
-import { ParticipantList, RaffleInterface, RaffleParamInterface } from '../typings/reward'
-import { CreateShop } from '../typings/shop'
+import { ParticipantList, RaffleInterface, RaffleParamInterface } from '../types/index'
+import { CreateShop } from '../types/index'
+import {
+  BasicResponseInterface,
+  PaginateParams,
+  PaginateResult,
+  PaginateStoreResult,
+  SetUpConfigInterface
+} from '../types/index'
 
 export default class Admin {
   private static network: AxiosInstance

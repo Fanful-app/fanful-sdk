@@ -3,10 +3,10 @@ import {
   PaginateParams,
   PaginateResult,
   RewardMetadata
-} from '@typings/global'
+} from '../types/index'
 import { AxiosInstance } from 'axios'
 import { URLS } from './helper/urls'
-import { RewardPointInterface } from '@typings/reward'
+import { RewardPointInterface } from '../types/index'
 
 export default class Reward {
   private static network: AxiosInstance

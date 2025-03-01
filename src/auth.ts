@@ -1,6 +1,6 @@
 import { AxiosInstance } from 'axios'
 import { URLS } from './helper/urls'
-import { BasicResponseInterface } from '@typings/global'
+import { BasicResponseInterface } from '../types/index'
 import {
   UserInterface,
   SignInUserInterface,
@@ -9,7 +9,7 @@ import {
   VerifyUserOtpInterface,
   ResetPasswordInterface,
   ForgotPasswordInterface
-} from '@typings/user'
+} from '../types/index'
 
 export default class Auth {
   private static network: AxiosInstance

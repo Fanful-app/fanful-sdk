@@ -1,5 +1,5 @@
-import { BasicResponseInterface, PaginateParams, PaginateResult } from '@typings/global'
-import { FcmTokenInterface, NotificationInterface } from '@typings/notification'
+import { BasicResponseInterface, PaginateParams, PaginateResult } from '../types/index'
+import { FcmTokenInterface, NotificationInterface } from '../types/index'
 import { AxiosInstance } from 'axios'
 import { URLS } from './helper/urls'
 

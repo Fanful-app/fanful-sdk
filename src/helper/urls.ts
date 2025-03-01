@@ -1,17 +1,18 @@
-import { ClientInterface } from '@typings/client'
-import { DEFAULT_PAGINATION, PaginateParams } from '@typings/global'
+import { ClientInterface } from '../../types/index'
+import { PaginateParams } from '../../types/index'
 import {
   CreateCommentInterface,
   ReactOnCommentInterface,
   ReactOnPostInterface
-} from '@typings/post'
-import { RaffleParamInterface } from '@typings/reward'
-import { CreateShop } from '@typings/shop'
+} from '../../types/index'
+import { RaffleParamInterface } from '../../types/index'
+import { CreateShop } from '../../types/index'
 import {
   BlockProfileInterface,
   FollowAndUnFollowProfileInterface,
   ProfileFollowersOrFollowingQueryParamInterface
-} from '@typings/user'
+} from '../../types/index'
+import { DEFAULT_PAGINATION } from './constants'
 
 export const URLS = {
   getPosts: '/posts',

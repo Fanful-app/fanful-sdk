@@ -14,14 +14,14 @@ import {
   UserProfileFollowersOrFollowingInterface,
   ProfileFollowersOrFollowingQueryParamInterface,
   UserRankInterface
-} from '@typings/user'
+} from '../types/index'
 
 import {
   PaginateParams,
   PaginateResult,
   RewardMetadata,
   BasicResponseInterface
-} from '@typings/global'
+} from '../types/index'
 
 export default class User {
   private static network: AxiosInstance
@@ -159,7 +159,7 @@ export default class User {
   public updateProfile = async (payload: UpdateProfileInterface): Promise<UserInterface> => {
     const form = new FormData()
 
-    Object.entries(payload).forEach(([key, value]) => {
+    Object.entries(payload).forEach(([key, value]: any) => {
       if (key === 'avatar' && !value.includes('https://')) {
         const { ext, name } = getAssetMeta(value)
 

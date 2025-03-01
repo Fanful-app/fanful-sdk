@@ -5,6 +5,10 @@ import json from '@rollup/plugin-json'
 import typescript from '@rollup/plugin-typescript'
 import peerDepsExternal from 'rollup-plugin-peer-deps-external'
 import { terser } from 'rollup-plugin-terser'
+// import copy from 'rollup-plugin-copy'
+// import dts from 'rollup-plugin-dts'
+// import alias from '@rollup/plugin-alias'
+// import replace from '@rollup/plugin-replace'
 
 export default {
   input: 'src/index.ts',

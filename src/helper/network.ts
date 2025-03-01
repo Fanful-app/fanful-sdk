@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios'
-import { FanfulSdkOptions } from '@typings/global'
+import { FanfulSdkOptions } from '../../types/index'
 import { reportError } from './utils'
 
 const envconfig: Record<NonNullable<FanfulSdkOptions['mode']>, string> = {
