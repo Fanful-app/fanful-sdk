@@ -1,6 +1,6 @@
 {
   "name": "fanful-sdk",
-  "version": "0.0.11-development-alpha",
+  "version": "0.0.12-development-alpha",
   "description": "A public SDK for Fanful clients",
   "main": "./dist/index.js",
   "module": "./dist/bundle.esm.js",

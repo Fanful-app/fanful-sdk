@@ -16,25 +16,26 @@ import { FanfulSdkOptions, BasicResponseInterface } from '../types/index'
 import Shop from './shop'
 
 export default class FanfulSdk {
-  public user: User
-  public auth: Auth
-  public post: Post
-  public shops: Shop
-  public admin: Admin
-  public raffle: Raffle
-  public thread: Thread
-  public reward: Reward
-  public comment: Comment
-  public notification: Notification
+  public user!: User
+  public auth!: Auth
+  public post!: Post
+  public shops!: Shop
+  public admin!: Admin
+  public raffle!: Raffle
+  public thread!: Thread
+  public reward!: Reward
+  public comment!: Comment
+  public notification!: Notification
   private static network: AxiosInstance
+  public config: Partial<FanfulSdkOptions> = {}
 
-  constructor(options: FanfulSdkOptions) {
+  public async init(options: FanfulSdkOptions): Promise<void> {
     if (options.client_id || options.secrete_key) {
       throw new Error('client_id and secrete_key is needed to use SDK')
     }
 
+    this.config = options
     const instance = createNetwork(options)
-
     FanfulSdk.network = instance
     this.user = new User(instance)
     this.auth = new Auth(instance)
