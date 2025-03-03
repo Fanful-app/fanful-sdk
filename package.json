@@ -1,6 +1,6 @@
 {
   "name": "fanful-sdk",
-  "version": "0.0.12-development-alpha",
+  "version": "0.0.14-development-alpha",
   "description": "A public SDK for Fanful clients",
   "main": "./dist/index.js",
   "module": "./dist/bundle.esm.js",
@@ -20,7 +20,7 @@
     "dist",
     "LICENSE",
     "README.md",
-    "types/index.d.ts"
+    "types"
   ],
   "types": "types/index.d.ts",
   "scripts": {
