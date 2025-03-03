@@ -1,5 +1,10 @@
-import { BasicResponseInterface, PaginateParams, PaginateResult } from '../types/index'
-import { RaffleEntryInterface, RaffleFilterInterface } from '../types/index'
+import {
+  BasicResponseInterface,
+  PaginateParams,
+  PaginateResult,
+  RaffleEntryInterface,
+  RaffleFilterInterface
+} from '../types/index'
 import { AxiosInstance } from 'axios'
 import { URLS } from './helper/urls'
 

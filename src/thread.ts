@@ -1,5 +1,11 @@
-import { BasicResponseInterface, PaginateParams, PaginateResult } from '../types/index'
-import { CommentInterface, CreateCommentInterface, ReactOnCommentInterface } from '../types/index'
+import {
+  CommentInterface,
+  CreateCommentInterface,
+  ReactOnCommentInterface,
+  BasicResponseInterface,
+  PaginateParams,
+  PaginateResult
+} from '../types/index'
 import { AxiosInstance } from 'axios'
 import { URLS } from './helper/urls'
 import { omit } from './helper/utils'

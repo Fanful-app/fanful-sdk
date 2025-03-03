@@ -1,30 +1,28 @@
 import { AxiosInstance } from 'axios'
 import { URLS } from './helper/urls'
 import {
-  ClientConfiguration,
-  ClientInterface,
-  CreateClientInterface,
-  HandleInterface,
   StoreInterface,
-  SubscriptionInterface
-} from '../types/index'
-
-import {
+  SubscriptionInterface,
+  HandleInterface,
+  CreateClientInterface,
+  ClientConfiguration,
+  SubscribersMetricsInterface,
   CountryMetricsInterface,
   MetricsInterface,
-  SubscribersMetricsInterface
-} from '../types/index'
-import { ReportInterface, UserInterface } from '../types/index'
-import { createFormDataFromPayload, omit } from './helper/utils'
-import { ParticipantList, RaffleInterface, RaffleParamInterface } from '../types/index'
-import { CreateShop } from '../types/index'
-import {
+  ClientInterface,
+  ReportInterface,
+  UserInterface,
+  RaffleParamInterface,
+  RaffleInterface,
+  ParticipantList,
+  CreateShop,
   BasicResponseInterface,
   PaginateParams,
   PaginateResult,
   PaginateStoreResult,
   SetUpConfigInterface
 } from '../types/index'
+import { createFormDataFromPayload } from './helper/utils'
 
 export default class Admin {
   private static network: AxiosInstance

@@ -1,5 +1,4 @@
-import { BasicResponseInterface } from '../types/index'
-import { ShopInterface, ShopResponse } from '../types/index'
+import { ShopInterface, ShopResponse, BasicResponseInterface } from '../types/index'
 import { AxiosInstance } from 'axios'
 import { URLS } from './helper/urls'
 

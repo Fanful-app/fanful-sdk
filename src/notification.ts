@@ -1,5 +1,10 @@
-import { BasicResponseInterface, PaginateParams, PaginateResult } from '../types/index'
-import { FcmTokenInterface, NotificationInterface } from '../types/index'
+import {
+  BasicResponseInterface,
+  PaginateParams,
+  PaginateResult,
+  FcmTokenInterface,
+  NotificationInterface
+} from '../types/index'
 import { AxiosInstance } from 'axios'
 import { URLS } from './helper/urls'
 

@@ -1,16 +1,14 @@
-import { ClientInterface } from '../../types/index'
-import { PaginateParams } from '../../types/index'
 import {
+  ClientInterface,
   CreateCommentInterface,
   ReactOnCommentInterface,
-  ReactOnPostInterface
-} from '../../types/index'
-import { RaffleParamInterface } from '../../types/index'
-import { CreateShop } from '../../types/index'
-import {
+  ReactOnPostInterface,
   BlockProfileInterface,
   FollowAndUnFollowProfileInterface,
-  ProfileFollowersOrFollowingQueryParamInterface
+  ProfileFollowersOrFollowingQueryParamInterface,
+  CreateShop,
+  RaffleParamInterface,
+  PaginateParams
 } from '../../types/index'
 import { DEFAULT_PAGINATION } from './constants'
 

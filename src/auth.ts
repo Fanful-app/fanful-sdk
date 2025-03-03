@@ -1,6 +1,5 @@
 import { AxiosInstance } from 'axios'
 import { URLS } from './helper/urls'
-import { BasicResponseInterface } from '../types/index'
 import {
   UserInterface,
   SignInUserInterface,
@@ -8,7 +7,8 @@ import {
   UserSessionInterface,
   VerifyUserOtpInterface,
   ResetPasswordInterface,
-  ForgotPasswordInterface
+  ForgotPasswordInterface,
+  BasicResponseInterface
 } from '../types/index'
 
 export default class Auth {

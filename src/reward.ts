@@ -2,11 +2,11 @@ import {
   BasicResponseInterface,
   PaginateParams,
   PaginateResult,
-  RewardMetadata
+  RewardMetadata,
+  RewardPointInterface
 } from '../types/index'
 import { AxiosInstance } from 'axios'
 import { URLS } from './helper/urls'
-import { RewardPointInterface } from '../types/index'
 
 export default class Reward {
   private static network: AxiosInstance

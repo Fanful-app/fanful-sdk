@@ -13,10 +13,7 @@ import {
   FollowAndUnFollowProfileInterface,
   UserProfileFollowersOrFollowingInterface,
   ProfileFollowersOrFollowingQueryParamInterface,
-  UserRankInterface
-} from '../types/index'
-
-import {
+  UserRankInterface,
   PaginateParams,
   PaginateResult,
   RewardMetadata,

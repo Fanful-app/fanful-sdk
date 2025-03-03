@@ -98,9 +98,9 @@ export type SignInInterface = {
   email_address?: string
 }
 
-export type UpdateProfileInterface = Partial<RecursivePartial<ClientInterface>>
+// export type UpdateProfileInterface = Partial<RecursivePartial<ClientInterface>>
 
-export type ForgotPasswordInterface = Pick<SignInInterface, 'email_address'>
+// export type ForgotPasswordInterface = Pick<SignInInterface, 'email_address'>
 
 export type SendNotificationInterface = {
   title: string

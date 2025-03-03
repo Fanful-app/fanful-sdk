@@ -2,6 +2,7 @@ import { AxiosInstance } from 'axios'
 
 import User from './user'
 import Auth from './auth'
+import Shop from './shop'
 import Post from './post'
 import Admin from './admin'
 import Raffle from './raffle'
@@ -9,11 +10,9 @@ import Thread from './thread'
 import Reward from './reward'
 import Comment from './comment'
 import { URLS } from '@app/helper/urls'
-import { Country } from '../types/index'
 import Notification from './notification'
 import { createNetwork } from '@app/helper/network'
-import { FanfulSdkOptions, BasicResponseInterface } from '../types/index'
-import Shop from './shop'
+import { FanfulSdkOptions, BasicResponseInterface, Country } from '../types/index'
 
 export default class FanfulSdk {
   public user!: User

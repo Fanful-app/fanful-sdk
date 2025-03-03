@@ -2,17 +2,15 @@ import {
   BasicResponseInterface,
   PaginateParams,
   PaginateResult,
-  RewardMetadata
-} from '../types/index'
-import {
+  RewardMetadata,
   CreatePostInterface,
   PostFilterInterface,
   PostInterface,
-  ReactOnPostInterface
+  ReactOnPostInterface,
+  ReportInterface
 } from '../types/index'
 import { AxiosInstance } from 'axios'
 import { URLS } from './helper/urls'
-import { ReportInterface } from '../types/index'
 
 export default class Post {
   private static network: AxiosInstance
