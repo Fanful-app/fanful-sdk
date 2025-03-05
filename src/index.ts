@@ -15,37 +15,37 @@ import { createNetwork } from '@app/helper/network'
 import { FanfulSdkOptions, BasicResponseInterface, Country } from '../types/index'
 
 export default class FanfulSdk {
-  public user!: User
-  public auth!: Auth
-  public post!: Post
-  public shops!: Shop
-  public admin!: Admin
-  public raffle!: Raffle
-  public thread!: Thread
-  public reward!: Reward
-  public comment!: Comment
-  public notification!: Notification
+  public user: User
+  public auth: Auth
+  public post: Post
+  public shops: Shop
+  public admin: Admin
+  public raffle: Raffle
+  public thread: Thread
+  public reward: Reward
+  public comment: Comment
+  public notification: Notification
   private static network: AxiosInstance
-  public config: Partial<FanfulSdkOptions> = {}
 
-  public async init(options: FanfulSdkOptions): Promise<void> {
+  constructor() {
+    this.user = new User(FanfulSdk.network)
+    this.auth = new Auth(FanfulSdk.network)
+    this.post = new Post(FanfulSdk.network)
+    this.shops = new Shop(FanfulSdk.network)
+    this.admin = new Admin(FanfulSdk.network)
+    this.raffle = new Raffle(FanfulSdk.network)
+    this.thread = new Thread(FanfulSdk.network)
+    this.reward = new Reward(FanfulSdk.network)
+    this.comment = new Comment(FanfulSdk.network)
+    this.notification = new Notification(FanfulSdk.network)
+ }
+
+  public init(options: FanfulSdkOptions) {
     if (options.client_id || options.secrete_key) {
-      throw new Error('client_id and secrete_key is needed to use SDK')
+      throw new Error('client_id or secrete_key is needed to use SDK')
     }
 
-    this.config = options
-    const instance = createNetwork(options)
-    FanfulSdk.network = instance
-    this.user = new User(instance)
-    this.auth = new Auth(instance)
-    this.post = new Post(instance)
-    this.shops = new Shop(instance)
-    this.admin = new Admin(instance)
-    this.raffle = new Raffle(instance)
-    this.thread = new Thread(instance)
-    this.reward = new Reward(instance)
-    this.comment = new Comment(instance)
-    this.notification = new Notification(instance)
+    FanfulSdk.network = createNetwork(options)
   }
 
   /**

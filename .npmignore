@@ -19,3 +19,4 @@
 /tests/          # Exclude test files
 /tsconfig.json   # Exclude TypeScript config
 /rollup.config.js # Exclude Rollup config
+/fanful-sdk-v0.0.14-development-alpha.tgz
