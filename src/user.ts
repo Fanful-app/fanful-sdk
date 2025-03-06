@@ -135,20 +135,6 @@ export default class User {
   }
 
   /**
-   * @method signInUser
-   * @param {SignInUserInterface} payload
-   * @returns {Promise<UserSessionInterface>} Sign in a user
-   */
-  public signInUser = async (payload: SignInUserInterface): Promise<UserSessionInterface> => {
-    const { data } = await User.network.post<BasicResponseInterface<UserSessionInterface>>(
-      URLS.signInUser,
-      payload
-    )
-
-    return data.payload
-  }
-
-  /**
    * @method updateProfile
    * @param {UpdateProfileInterface} payload
    * @returns {Promise<UserInterface>} Updates a user profile
@@ -176,14 +162,18 @@ export default class User {
       form
     )
 
+    // todo
+    // get and parse the previous session from the storage,
+    // merge parsed session with data.payload using lodash.merge function
+    // set back the merged session into the storage
     return data.payload
   }
 
   /**
    * @method delete.
-   * @returns {Promise<T>} Delete User Account Data
+   * @returns {Promise<null>} Delete User Account Data
    */
-  public delete = async () => {
+  public delete = async (): Promise<null> => {
     const { data } = await User.network.delete<BasicResponseInterface>(URLS.deleteUser)
 
     return data.payload

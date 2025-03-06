@@ -10,12 +10,15 @@ import {
   ForgotPasswordInterface,
   BasicResponseInterface
 } from '../types/index'
+import { ACCESS_TOKEN_KEY, StorageType } from './helper/storage'
 
 export default class Auth {
   private static network: AxiosInstance
+  private static storage: StorageType
 
-  constructor(network: AxiosInstance) {
+  constructor(network: AxiosInstance, storage: StorageType) {
     Auth.network = network
+    Auth.storage = storage
   }
 
   /**
@@ -28,6 +31,9 @@ export default class Auth {
       URLS.signInUser,
       payload
     )
+
+    // Store the access token
+    await Auth.storage.setItem(ACCESS_TOKEN_KEY, JSON.stringify(data.payload))
 
     return data.payload
   }
@@ -56,6 +62,9 @@ export default class Auth {
       URLS.verifyUserOtp,
       payload
     )
+
+    // Store the access token
+    await Auth.storage.setItem(ACCESS_TOKEN_KEY, JSON.stringify(data.payload))
 
     return data.payload
   }

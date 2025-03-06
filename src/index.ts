@@ -12,7 +12,8 @@ import Comment from './comment'
 import { URLS } from '@app/helper/urls'
 import Notification from './notification'
 import { createNetwork } from '@app/helper/network'
-import { FanfulSdkOptions, BasicResponseInterface, Country } from '../types/index'
+import inMemoryStorage, { StorageType } from '@app/helper/storage'
+import { FanfulSdkOptions, BasicResponseInterface, Country } from '@typings/index'
 
 export default class FanfulSdk {
   public user: User
@@ -25,11 +26,11 @@ export default class FanfulSdk {
   public reward: Reward
   public comment: Comment
   public notification: Notification
+  private static storage: StorageType
   private static network: AxiosInstance
 
-  constructor() {
+  constructor(options?: { storage: StorageType }) {
     this.user = new User(FanfulSdk.network)
-    this.auth = new Auth(FanfulSdk.network)
     this.post = new Post(FanfulSdk.network)
     this.shops = new Shop(FanfulSdk.network)
     this.admin = new Admin(FanfulSdk.network)
@@ -38,14 +39,16 @@ export default class FanfulSdk {
     this.reward = new Reward(FanfulSdk.network)
     this.comment = new Comment(FanfulSdk.network)
     this.notification = new Notification(FanfulSdk.network)
- }
+    FanfulSdk.storage = options?.storage || inMemoryStorage
+    this.auth = new Auth(FanfulSdk.network, FanfulSdk.storage)
+  }
 
   public init(options: FanfulSdkOptions) {
     if (options.client_id || options.secrete_key) {
       throw new Error('client_id or secrete_key is needed to use SDK')
     }
 
-    FanfulSdk.network = createNetwork(options)
+    FanfulSdk.network = createNetwork(options, FanfulSdk.storage)
   }
 
   /**
