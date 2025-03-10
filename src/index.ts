@@ -13,7 +13,8 @@ import { URLS } from '@app/helper/urls'
 import Notification from './notification'
 import { createNetwork } from '@app/helper/network'
 import inMemoryStorage, { StorageType } from '@app/helper/storage'
-import { FanfulSdkOptions, BasicResponseInterface, Country } from '@typings/index'
+import { FanfulSdkOptions, Country } from '@typings/index'
+import { getCountries as countries } from './helper/utils'
 
 export default class FanfulSdk {
   public user: User
@@ -30,7 +31,6 @@ export default class FanfulSdk {
   private static network: AxiosInstance
 
   constructor(options?: { storage: StorageType }) {
-    this.user = new User(FanfulSdk.network)
     this.post = new Post(FanfulSdk.network)
     this.shops = new Shop(FanfulSdk.network)
     this.admin = new Admin(FanfulSdk.network)
@@ -41,6 +41,7 @@ export default class FanfulSdk {
     this.notification = new Notification(FanfulSdk.network)
     FanfulSdk.storage = options?.storage || inMemoryStorage
     this.auth = new Auth(FanfulSdk.network, FanfulSdk.storage)
+    this.user = new User(FanfulSdk.network, FanfulSdk.storage)
   }
 
   public init(options: FanfulSdkOptions) {
@@ -53,13 +54,11 @@ export default class FanfulSdk {
 
   /**
    * @method getCountries
-   * @returns {Promise<Country[]>} Returns the list of countries
+   * @returns {Country[]} Returns the list of countries
    */
-  public getCountries = async (): Promise<Country[]> => {
-    const { data } = await FanfulSdk.network.get<BasicResponseInterface<Country[]>>(
-      URLS.getCountries
-    )
+  public getCountries = (): Country[] => {
+    const data = countries()
 
-    return data.payload
+    return data
   }
 }

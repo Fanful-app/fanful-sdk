@@ -10,7 +10,7 @@
     "declaration": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    // "declarationDir": "./dist/src",
+    "resolveJsonModule": true,
     "typeRoots": ["./node_modules/@types", "typings"],
     "paths": {
       "@app/*": ["src/*"],

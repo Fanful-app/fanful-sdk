@@ -2196,6 +2196,11 @@
   resolved "https://registry.npmjs.org/@types/json-schema/-/json-schema-7.0.15.tgz"
   integrity sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==
 
+"@types/lodash@^4.17.16":
+  version "4.17.16"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.17.16.tgz#94ae78fab4a38d73086e962d0b65c30d816bfb0a"
+  integrity sha512-HX7Em5NYQAXKW+1T+FiuG27NGwzJfCX3s1GjOa7ujxZa52kjJLOr4FUxT+giF6Tgxv1e+/czV/iTtBw27WTU9g==
+
 "@types/minimatch@*":
   version "5.1.2"
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-5.1.2.tgz#07508b45797cb81ec3f273011b054cd0755eddca"
@@ -3124,6 +3129,11 @@ cosmiconfig@^9.0.0:
     import-fresh "^3.3.0"
     js-yaml "^4.1.0"
     parse-json "^5.2.0"
+
+countries-list@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/countries-list/-/countries-list-3.1.1.tgz#f3a339a06228ff053c0e8e44f17fa5ad4f3cab58"
+  integrity sha512-nPklKJ5qtmY5MdBKw1NiBAoyx5Sa7p2yPpljZyQ7gyCN1m+eMFs9I6CT37Mxt8zvR5L3VzD3DJBE4WQzX3WF4A==
 
 create-jest@^29.7.0:
   version "29.7.0"

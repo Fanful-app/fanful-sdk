@@ -1,11 +1,11 @@
 import { AxiosInstance } from 'axios'
+import _ from 'lodash';
 
 import { URLS } from '@app/helper/urls'
 import { getAssetMeta } from './helper/utils'
 import {
   UserInterface,
   ReportInterface,
-  SignInUserInterface,
   UserSessionInterface,
   BlockProfileInterface,
   UserReferralInterface,
@@ -19,12 +19,15 @@ import {
   RewardMetadata,
   BasicResponseInterface
 } from '../types/index'
+import { ACCESS_TOKEN_KEY, StorageType } from './helper/storage'
 
 export default class User {
   private static network: AxiosInstance
+  private static storage: StorageType
 
-  constructor(network: AxiosInstance) {
+  constructor(network: AxiosInstance, storage: StorageType) {
     User.network = network
+    User.storage = storage
   }
 
   /**
@@ -162,11 +165,25 @@ export default class User {
       form
     )
 
-    // todo
-    // get and parse the previous session from the storage,
-    // merge parsed session with data.payload using lodash.merge function
-    // set back the merged session into the storage
-    return data.payload
+    const session = await User.storage.getItem(ACCESS_TOKEN_KEY);
+
+    let parsedSession: UserInterface | null = null;
+    
+    if (session) {
+      try {
+        parsedSession = JSON.parse(session);
+      } catch (error) {
+        console.error('Error parsing session:', error);
+        parsedSession = null;
+      }
+    }
+    
+    const mergedPayload = _.merge({}, parsedSession, data.payload);
+    
+    // Set back the merged session into the storage
+    await User.storage.setItem(ACCESS_TOKEN_KEY, JSON.stringify(mergedPayload));
+
+    return mergedPayload
   }
 
   /**
