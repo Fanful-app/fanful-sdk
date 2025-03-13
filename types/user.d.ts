@@ -4,10 +4,9 @@ import { FcmTokenInterface } from './notification'
 export interface Country {
   name: string
   cca2: string
-  cca3: string
   flag: string
   type?: string
-  dialCode: string
+  dial_code: string
 }
 
 export interface UserInterface {

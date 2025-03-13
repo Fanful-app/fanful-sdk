@@ -1,11 +1,4 @@
-import { BasicResponseInterface, Country, PaginateResult } from '../../types/index'
-import countries2to3 from "countries-list/minimal/countries.2to3.min.json";
-import {
-  countries,
-  getCountryCode,
-  getEmojiFlag,
-  ICountry,
-} from "countries-list";
+import { BasicResponseInterface, Country, PaginateResult } from '@typings/index'
 
 /**
  * @description Utility function to omit specified keys from an object.
@@ -101,33 +94,3 @@ export function createMockResponse<T = any>(data?: T[]): BasicResponseInterface<
     metadata: null
   }
 }
-
-/**
- *
- * @description gets all countries formatted properly
- * @function getCountries
- * @returns {Country[]}
- */
-export const getCountries = (): Country[] => {
-  return Object.values(countries).map((country: ICountry) => ({
-    name: country.name,
-    cca2: getCountryCode(country.name) as string,
-    cca3: findCodes(getCountryCode(country.name) as string) as string,
-    flag: getEmojiFlag(getCountryCode(country.name) as any) as string,
-    dialCode: "+" + country.phone[0].toString(),
-  }));
-};
-
-/**
- *
- * @description returns cca3 codes from cca2 codes
- * @function findCodes
- * @returns {string} 
- */
-const findCodes = (cca2: string): string => {
-  const code = countries2to3[cca2 as keyof typeof countries2to3];
-  if (!code) {
-    throw new Error(`Country code ${cca2} not found`);
-  }
-  return code;
-};

@@ -1,33 +1,30 @@
 import { AxiosInstance } from 'axios'
-import _ from 'lodash';
 
 import { URLS } from '@app/helper/urls'
+import SessionManager from './helper/session'
 import { getAssetMeta } from './helper/utils'
 import {
   UserInterface,
+  PaginateParams,
+  PaginateResult,
+  RewardMetadata,
   ReportInterface,
+  UserRankInterface,
   UserSessionInterface,
   BlockProfileInterface,
   UserReferralInterface,
   UpdateProfileInterface,
+  BasicResponseInterface,
   FollowAndUnFollowProfileInterface,
   UserProfileFollowersOrFollowingInterface,
-  ProfileFollowersOrFollowingQueryParamInterface,
-  UserRankInterface,
-  PaginateParams,
-  PaginateResult,
-  RewardMetadata,
-  BasicResponseInterface
+  ProfileFollowersOrFollowingQueryParamInterface
 } from '../types/index'
-import { ACCESS_TOKEN_KEY, StorageType } from './helper/storage'
 
 export default class User {
   private static network: AxiosInstance
-  private static storage: StorageType
 
-  constructor(network: AxiosInstance, storage: StorageType) {
+  constructor(network: AxiosInstance) {
     User.network = network
-    User.storage = storage
   }
 
   /**
@@ -165,25 +162,10 @@ export default class User {
       form
     )
 
-    const session = await User.storage.getItem(ACCESS_TOKEN_KEY);
-
-    let parsedSession: UserInterface | null = null;
-    
-    if (session) {
-      try {
-        parsedSession = JSON.parse(session);
-      } catch (error) {
-        console.error('Error parsing session:', error);
-        parsedSession = null;
-      }
-    }
-    
-    const mergedPayload = _.merge({}, parsedSession, data.payload);
-    
     // Set back the merged session into the storage
-    await User.storage.setItem(ACCESS_TOKEN_KEY, JSON.stringify(mergedPayload));
+    await SessionManager.updateItem({ user: data.payload })
 
-    return mergedPayload
+    return data.payload
   }
 
   /**

@@ -1,5 +1,6 @@
 import { AxiosInstance } from 'axios'
 import { URLS } from './helper/urls'
+import SessionManager from './helper/session'
 import {
   UserInterface,
   SignInUserInterface,
@@ -10,15 +11,12 @@ import {
   ForgotPasswordInterface,
   BasicResponseInterface
 } from '../types/index'
-import { ACCESS_TOKEN_KEY, StorageType } from './helper/storage'
 
 export default class Auth {
   private static network: AxiosInstance
-  private static storage: StorageType
 
-  constructor(network: AxiosInstance, storage: StorageType) {
+  constructor(network: AxiosInstance) {
     Auth.network = network
-    Auth.storage = storage
   }
 
   /**
@@ -33,7 +31,7 @@ export default class Auth {
     )
 
     // Store the access token
-    await Auth.storage.setItem(ACCESS_TOKEN_KEY, JSON.stringify(data.payload))
+    await SessionManager.setItem(data.payload)
 
     return data.payload
   }
@@ -64,7 +62,7 @@ export default class Auth {
     )
 
     // Store the access token
-    await Auth.storage.setItem(ACCESS_TOKEN_KEY, JSON.stringify(data.payload))
+    await SessionManager.setItem(data.payload)
 
     return data.payload
   }

@@ -1,4 +1,5 @@
 import { AxiosInstance } from 'axios'
+import { Country as CountryList } from 'country-state-city'
 
 import User from './user'
 import Auth from './auth'
@@ -9,12 +10,11 @@ import Raffle from './raffle'
 import Thread from './thread'
 import Reward from './reward'
 import Comment from './comment'
-import { URLS } from '@app/helper/urls'
 import Notification from './notification'
-import { createNetwork } from '@app/helper/network'
-import inMemoryStorage, { StorageType } from '@app/helper/storage'
+import SessionManager from './helper/session'
+import { StorageType } from './helper/storage'
+import { createNetwork } from './helper/network'
 import { FanfulSdkOptions, Country } from '@typings/index'
-import { getCountries as countries } from './helper/utils'
 
 export default class FanfulSdk {
   public user: User
@@ -27,11 +27,12 @@ export default class FanfulSdk {
   public reward: Reward
   public comment: Comment
   public notification: Notification
-  private static storage: StorageType
   private static network: AxiosInstance
 
   constructor(options?: { storage: StorageType }) {
     this.post = new Post(FanfulSdk.network)
+    this.auth = new Auth(FanfulSdk.network)
+    this.user = new User(FanfulSdk.network)
     this.shops = new Shop(FanfulSdk.network)
     this.admin = new Admin(FanfulSdk.network)
     this.raffle = new Raffle(FanfulSdk.network)
@@ -39,9 +40,7 @@ export default class FanfulSdk {
     this.reward = new Reward(FanfulSdk.network)
     this.comment = new Comment(FanfulSdk.network)
     this.notification = new Notification(FanfulSdk.network)
-    FanfulSdk.storage = options?.storage || inMemoryStorage
-    this.auth = new Auth(FanfulSdk.network, FanfulSdk.storage)
-    this.user = new User(FanfulSdk.network, FanfulSdk.storage)
+    SessionManager.init(options?.storage)
   }
 
   public init(options: FanfulSdkOptions) {
@@ -49,7 +48,7 @@ export default class FanfulSdk {
       throw new Error('client_id or secrete_key is needed to use SDK')
     }
 
-    FanfulSdk.network = createNetwork(options, FanfulSdk.storage)
+    FanfulSdk.network = createNetwork(options)
   }
 
   /**
@@ -57,8 +56,11 @@ export default class FanfulSdk {
    * @returns {Country[]} Returns the list of countries
    */
   public getCountries = (): Country[] => {
-    const data = countries()
-
-    return data
+    return CountryList.getAllCountries().map((country) => ({
+      name: country.name,
+      cca2: country.isoCode,
+      dial_code: country.phonecode,
+      flag: `https://flagcdn.com/w320/${country.isoCode.toLowerCase()}.png`
+    }))
   }
 }
