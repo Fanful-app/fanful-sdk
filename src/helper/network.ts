@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios'
-import { FanfulSdkOptions } from '@typings/index'
+import { FanfulSdkOptions } from '../../types/index'
 
 import { reportError } from './utils'
 import SessionManager from './session'

@@ -1,6 +1,6 @@
 import { AxiosInstance } from 'axios'
 
-import { URLS } from '@app/helper/urls'
+import { URLS } from './helper/urls'
 import SessionManager from './helper/session'
 import { getAssetMeta } from './helper/utils'
 import {

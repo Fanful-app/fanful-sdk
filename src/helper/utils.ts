@@ -1,4 +1,4 @@
-import { BasicResponseInterface, Country, PaginateResult } from '@typings/index'
+import { BasicResponseInterface, CountryInterface, PaginateResult } from '@typings/index'
 
 /**
  * @description Utility function to omit specified keys from an object.

@@ -14,7 +14,7 @@ import Notification from './notification'
 import SessionManager from './helper/session'
 import { StorageType } from './helper/storage'
 import { createNetwork } from './helper/network'
-import { FanfulSdkOptions, Country } from '@typings/index'
+import { FanfulSdkOptions, CountryInterface } from '../types/index'
 
 export default class FanfulSdk {
   public user: User
@@ -55,7 +55,7 @@ export default class FanfulSdk {
    * @method getCountries
    * @returns {Country[]} Returns the list of countries
    */
-  public getCountries = (): Country[] => {
+  public getCountries = (): CountryInterface[] => {
     return CountryList.getAllCountries().map((country) => ({
       name: country.name,
       cca2: country.isoCode,

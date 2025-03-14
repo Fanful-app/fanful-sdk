@@ -1,7 +1,7 @@
 import { Country } from './country'
 import { FcmTokenInterface } from './notification'
 
-export interface Country {
+export interface CountryInterface {
   name: string
   cca2: string
   flag: string

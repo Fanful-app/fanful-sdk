@@ -14,7 +14,8 @@
     "typeRoots": ["./node_modules/@types", "typings"],
     "paths": {
       "@app/*": ["src/*"],
-      "@typings/*": ["types/*"]
+      "@typings": ["./types", "../types"],
+      "@typings/*": ["./types/*", "../types/*"]
     }
   },
   "include": ["src/**/*", "typings/types.d.ts"],
@@ -31,6 +32,11 @@
       },
       "otherReplacer": {
         "enabled": true
+      },
+      "typingsReplacer": {
+        "enabled": true,
+        "alias": "@typings",
+        "path": "./types"
       }
     },
     "fileExtensions": {

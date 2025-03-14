@@ -1,5 +1,5 @@
 import merge from 'lodash/merge'
-import { UserSessionInterface } from '@typings/user'
+import { UserSessionInterface } from '../../types/index'
 import inMemoryStorage, { StorageType } from './storage'
 
 let storage: null | StorageType = null
