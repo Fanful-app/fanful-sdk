@@ -112,9 +112,9 @@ export default class User {
   /**
    * @method blockProfile
    * @param {BlockProfileInterface} params
-   * @returns {Promise<T>} Block a User Profile
+   * @returns {Promise<null>} Block a User Profile
    */
-  public blockProfile = async (params: BlockProfileInterface) => {
+  public blockProfile = async (params: BlockProfileInterface): Promise<null> => {
     const { data } = await User.network.put<BasicResponseInterface>(URLS.blockProfile(params))
 
     return data.payload
@@ -123,9 +123,9 @@ export default class User {
   /**
    * @method report
    * @param {ReportInterface} payload
-   * @returns {Promise<T>} Like and Unlike a comment
+   * @returns {Promise<null>} Report a User Profile
    */
-  public report = async (payload: ReportInterface) => {
+  public report = async (payload: ReportInterface): Promise<null> => {
     const { data } = await User.network.post<BasicResponseInterface>(URLS.reportProfile, {
       user_id: payload.id,
       reason: payload.reason

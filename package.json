@@ -15,7 +15,13 @@
     "node": ">=14.0.0"
   },
   "type": "module",
-  "files": ["bin", "dist", "LICENSE", "README.md", "types"],
+  "files": [
+    "bin",
+    "dist",
+    "LICENSE",
+    "README.md",
+    "types"
+  ],
   "types": "types/index.d.ts",
   "scripts": {
     "build:ts": "yarn clean && tsc && tsc-alias",
@@ -24,7 +30,7 @@
     "watch": "tsc -w",
     "lint": "eslint . && yarn run lint:lockfile",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --config .prettierrc.json --write '**/*.js' '**/*.json'",
+    "format": "prettier --config .prettierrc.json --write '**/*.js'",
     "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
     "test:watch": "NODE_OPTIONS=--experimental-vm-modules npx jest --watch",
     "coverage:view": "open-cli coverage/lcov-report/index.html",
@@ -38,7 +44,9 @@
     "url": "https://github.com/josemak25"
   },
   "license": "Apache-2.0",
-  "keywords": ["Social Media, Post"],
+  "keywords": [
+    "Social Media, Post"
+  ],
   "homepage": "https://github.com/josemak25/fanful-sdk",
   "bugs": {
     "url": "https://github.com/josemak25/fanful-sdk/issues"
@@ -103,7 +111,9 @@
     "preset": "ts-jest",
     "testEnvironment": "node",
     "verbose": true,
-    "setupFilesAfterEnv": ["<rootDir>/jest.setup.ts"],
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest.setup.ts"
+    ],
     "collectCoverage": true,
     "coverageThreshold": {
       "global": {
@@ -113,16 +123,25 @@
         "statements": 80
       }
     },
-    "testPathIgnorePatterns": ["/__tests__/.*/__fixtures__/.*"],
-    "collectCoverageFrom": ["index.js", "src/**/*.{js,ts}"],
-    "testMatch": ["**/*.test.{js,ts}"],
+    "testPathIgnorePatterns": [
+      "/__tests__/.*/__fixtures__/.*"
+    ],
+    "collectCoverageFrom": [
+      "index.js",
+      "src/**/*.{js,ts}"
+    ],
+    "testMatch": [
+      "**/*.test.{js,ts}"
+    ],
     "moduleNameMapper": {
       "^@app/(.*)$": "<rootDir>/src/$1",
       "^@typings/(.*)$": "<rootDir>/typings/$1"
     }
   },
   "lint-staged": {
-    "**/*.{js,json}": ["yarn run format"]
+    "**/*.{js,json}": [
+      "yarn run format"
+    ]
   },
   "husky": {
     "hooks": {
@@ -135,25 +154,44 @@
     }
   },
   "commitlint": {
-    "extends": ["@commitlint/config-conventional"]
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   },
   "standard": {
-    "env": ["jest"],
+    "env": [
+      "jest"
+    ],
     "parser": "babel-eslint",
-    "ignore": ["**/out/"]
+    "ignore": [
+      "**/out/"
+    ]
   },
-  "eslintIgnore": ["coverage/**"],
+  "eslintIgnore": [
+    "coverage/**"
+  ],
   "babel": {
-    "plugins": ["@babel/plugin-syntax-top-level-await"]
+    "plugins": [
+      "@babel/plugin-syntax-top-level-await"
+    ]
   },
   "eslintConfig": {
-    "plugins": ["node", "security", "jest"],
-    "extends": ["plugin:node/recommended"],
+    "plugins": [
+      "node",
+      "security",
+      "jest"
+    ],
+    "extends": [
+      "plugin:node/recommended"
+    ],
     "rules": {
       "node/no-unsupported-features/es-syntax": [
         "error",
         {
-          "ignores": ["dynamicImport", "modules"]
+          "ignores": [
+            "dynamicImport",
+            "modules"
+          ]
         }
       ],
       "no-process-exit": "warn",
@@ -185,7 +223,10 @@
     }
   },
   "release": {
-    "branches": ["main", "master"],
+    "branches": [
+      "main",
+      "master"
+    ],
     "analyzeCommits": {
       "preset": "angular",
       "releaseRules": [
@@ -217,7 +258,9 @@
     [
       "@semantic-release/git",
       {
-        "assets": ["CHANGELOG.md"]
+        "assets": [
+          "CHANGELOG.md"
+        ]
       }
     ],
     "@semantic-release/github"

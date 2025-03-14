@@ -5,13 +5,5 @@
   "semi": false,
   "trailingComma": "none",
   "useTabs": false,
-  "bracketSpacing": true,
-  "overrides": [
-    {
-      "files": "*.json",
-      "options": {
-        "parser": "json"
-      }
-    }
-  ]
+  "bracketSpacing": true
 }
