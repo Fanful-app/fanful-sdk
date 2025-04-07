@@ -23,14 +23,14 @@ A public SDK for Fanful clients
 # Install
 
 ```bash
-yarn add fanful-sdk-test
+yarn add fanful-sdk
 ```
 
 # Usage
 
 ```js
 // @TODO
-const {} = require('fanful-sdk-test')
+import Fanful from 'fanful-sdk'
 ```
 
 # Example
