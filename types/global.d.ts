@@ -62,7 +62,3 @@ export type FanfulSdkOptions = {
 }
 
 export interface PaginateParams extends Pick<PaginateResult, 'page'> {}
-
-export const DEFAULT_PAGINATION: number = 10
-
-export interface FanfulSdkConfig {}
