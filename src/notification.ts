@@ -1,18 +1,23 @@
+import { AxiosInstance } from 'axios'
+import { SupabaseClient } from '@supabase/supabase-js'
+
+import { URLS } from './helper/urls'
 import {
-  BasicResponseInterface,
   PaginateParams,
   PaginateResult,
   FcmTokenInterface,
-  NotificationInterface
-} from '../types/index'
-import { AxiosInstance } from 'axios'
-import { URLS } from './helper/urls'
+  NotificationInterface,
+  BasicResponseInterface
+} from '../types'
 
 export default class Notification {
-  private static network: AxiosInstance
+  private static web: {
+    network: AxiosInstance
+    supabase: SupabaseClient<any, 'public', any>
+  }
 
-  constructor(network: AxiosInstance) {
-    Notification.network = network
+  constructor(web: typeof Notification.web) {
+    Notification.web = web
   }
 
   /**
@@ -21,7 +26,7 @@ export default class Notification {
    * @returns {Promise<PaginateResult<NotificationInterface>>} Returns a list of notifications
    */
   public get = async (params?: PaginateParams): Promise<PaginateResult<NotificationInterface>> => {
-    const { data } = await Notification.network.get<
+    const { data } = await Notification.web.network.get<
       BasicResponseInterface<PaginateResult<NotificationInterface>>
     >(URLS.getNotifications, { params })
 
@@ -31,10 +36,10 @@ export default class Notification {
   /**
    * @method seen
    * @param {Pick<NotificationInterface, 'id'>} params
-   * @returns {Promise<T>} Make or Mark a Notification as seen
+   * @returns {Promise<BasicResponseInterface>} Make or Mark a Notification as seen
    */
-  public seen = async ({ id }: Pick<NotificationInterface, 'id'>) => {
-    const { data } = await Notification.network.post<BasicResponseInterface>(
+  public seen = async ({ id }: Pick<NotificationInterface, 'id'>): Promise<null> => {
+    const { data } = await Notification.web.network.post<BasicResponseInterface>(
       URLS.seenNotification(id)
     )
 
@@ -43,10 +48,10 @@ export default class Notification {
 
   /**
    * @method markAllNotification
-   * @returns {Promise<T>} Mark all Notification as seen
+   * @returns {Promise<null>} Mark all Notification as seen
    */
-  public markAll = async () => {
-    const { data } = await Notification.network.post<BasicResponseInterface>(
+  public markAll = async (): Promise<null> => {
+    const { data } = await Notification.web.network.post<BasicResponseInterface>(
       URLS.markAllNotification
     )
 
@@ -56,10 +61,10 @@ export default class Notification {
   /**
    * @method registerPushNotification
    * @param {FcmTokenInterface} payload
-   * @returns {Promise<T>} Register Push Notification on device
+   * @returns {Promise<null>} Register Push Notification on device
    */
-  public register = async (payload: FcmTokenInterface) => {
-    const { data } = await Notification.network.post<BasicResponseInterface>(
+  public register = async (payload: FcmTokenInterface): Promise<null> => {
+    const { data } = await Notification.web.network.post<BasicResponseInterface>(
       URLS.registerPushNotification,
       payload
     )

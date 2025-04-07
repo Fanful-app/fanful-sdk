@@ -1,34 +1,39 @@
 import { AxiosInstance } from 'axios'
+import { SupabaseClient } from '@supabase/supabase-js'
+
 import { URLS } from './helper/urls'
-import {
-  StoreInterface,
-  SubscriptionInterface,
-  HandleInterface,
-  CreateClientInterface,
-  ClientConfiguration,
-  SubscribersMetricsInterface,
-  CountryMetricsInterface,
-  MetricsInterface,
-  ClientInterface,
-  ReportInterface,
-  UserInterface,
-  RaffleParamInterface,
-  RaffleInterface,
-  ParticipantList,
-  CreateShop,
-  BasicResponseInterface,
-  PaginateParams,
-  PaginateResult,
-  PaginateStoreResult,
-  SetUpConfigInterface
-} from '../types/index'
 import { createFormDataFromPayload } from './helper/utils'
+import {
+  CreateShop,
+  UserInterface,
+  PaginateResult,
+  PaginateParams,
+  StoreInterface,
+  HandleInterface,
+  ClientInterface,
+  RaffleInterface,
+  ReportInterface,
+  ParticipantList,
+  MetricsInterface,
+  ClientConfiguration,
+  PaginateStoreResult,
+  RaffleParamInterface,
+  SetUpConfigInterface,
+  CreateClientInterface,
+  SubscriptionInterface,
+  BasicResponseInterface,
+  CountryMetricsInterface,
+  SubscribersMetricsInterface
+} from '../types/index'
 
 export default class Admin {
-  private static network: AxiosInstance
+  private static web: {
+    network: AxiosInstance
+    supabase: SupabaseClient<any, 'public', any>
+  }
 
-  constructor(network: AxiosInstance) {
-    Admin.network = network
+  constructor(web: typeof Admin.web) {
+    Admin.web = web
   }
 
   /**
@@ -36,7 +41,7 @@ export default class Admin {
    * @returns {Promise<ClientInterface>} Returns a list of clients
    */
   public clients = async (payload: PaginateParams): Promise<PaginateResult<ClientInterface>> => {
-    const { data } = await Admin.network.get<
+    const { data } = await Admin.web.network.get<
       BasicResponseInterface<PaginateResult<ClientInterface>>
     >(URLS.getClients(payload))
 
@@ -51,7 +56,7 @@ export default class Admin {
   public deleteClient = async (
     payload: Pick<ClientInterface, 'client_id'>
   ): Promise<ClientInterface> => {
-    const { data } = await Admin.network.delete<BasicResponseInterface<ClientInterface>>(
+    const { data } = await Admin.web.network.delete<BasicResponseInterface<ClientInterface>>(
       URLS.deleteClient(payload)
     )
 
@@ -64,7 +69,7 @@ export default class Admin {
    * @returns {Promise<ClientInterface>} creates a client
    */
   public create = async (payload: CreateClientInterface): Promise<ClientInterface> => {
-    const { data } = await Admin.network.post<BasicResponseInterface<ClientInterface>>(
+    const { data } = await Admin.web.network.post<BasicResponseInterface<ClientInterface>>(
       URLS.createClient,
       payload
     )
@@ -81,7 +86,7 @@ export default class Admin {
     const { id, ...restParams } = payload
 
     const formData = createFormDataFromPayload(restParams)
-    const { data } = await Admin.network.post<BasicResponseInterface<ClientInterface>>(
+    const { data } = await Admin.web.network.post<BasicResponseInterface<ClientInterface>>(
       URLS.whiteLabelClientApp(id as string),
       formData,
       {
@@ -99,7 +104,7 @@ export default class Admin {
    * @returns {Promise<MetricsInterface>} get dashboard metrics for admin
    */
   public metrics = async (): Promise<MetricsInterface> => {
-    const { data } = await Admin.network.get<BasicResponseInterface<MetricsInterface>>(
+    const { data } = await Admin.web.network.get<BasicResponseInterface<MetricsInterface>>(
       URLS.getMetrics
     )
 
@@ -111,7 +116,7 @@ export default class Admin {
    * @returns {Promise<CountryMetricsInterface>} get dashboard country metrics for admin
    */
   public countryMetrics = async (): Promise<CountryMetricsInterface> => {
-    const { data } = await Admin.network.get<BasicResponseInterface<CountryMetricsInterface>>(
+    const { data } = await Admin.web.network.get<BasicResponseInterface<CountryMetricsInterface>>(
       URLS.getCountryMetrics
     )
 
@@ -123,9 +128,9 @@ export default class Admin {
    * @returns {Promise<SubscribersMetricsInterface>} get dashboard subscription metrics
    */
   public subscriptionMetrics = async (): Promise<SubscribersMetricsInterface> => {
-    const { data } = await Admin.network.get<BasicResponseInterface<SubscribersMetricsInterface>>(
-      URLS.getSubscriptionMetrics
-    )
+    const { data } = await Admin.web.network.get<
+      BasicResponseInterface<SubscribersMetricsInterface>
+    >(URLS.getSubscriptionMetrics)
 
     return data.payload
   }
@@ -138,7 +143,7 @@ export default class Admin {
   public reportedUsers = async (
     payload: PaginateParams
   ): Promise<PaginateResult<ReportInterface>> => {
-    const { data } = await Admin.network.get<
+    const { data } = await Admin.web.network.get<
       BasicResponseInterface<PaginateResult<ReportInterface>>
     >(URLS.getReportedUsers(payload))
 
@@ -153,7 +158,7 @@ export default class Admin {
   public resolveReportedUser = async (
     payload: { user_id: string } & Pick<ClientInterface, 'id'>
   ): Promise<ClientInterface> => {
-    const { data } = await Admin.network.put<BasicResponseInterface<ClientInterface>>(
+    const { data } = await Admin.web.network.put<BasicResponseInterface<ClientInterface>>(
       URLS.resolveReportedUser(payload)
     )
 
@@ -168,7 +173,7 @@ export default class Admin {
   public suspendReportedUser = async (
     payload: { user_id: string } & Pick<ClientInterface, 'id'>
   ): Promise<ClientInterface> => {
-    const { data } = await Admin.network.delete<BasicResponseInterface<ClientInterface>>(
+    const { data } = await Admin.web.network.delete<BasicResponseInterface<ClientInterface>>(
       URLS.suspendReportedUser(payload)
     )
 
@@ -182,7 +187,7 @@ export default class Admin {
   public reportedContents = async (
     payload: PaginateParams
   ): Promise<PaginateResult<ReportInterface>> => {
-    const { data } = await Admin.network.get<
+    const { data } = await Admin.web.network.get<
       BasicResponseInterface<PaginateResult<ReportInterface>>
     >(URLS.getReportedContents(payload))
 
@@ -197,7 +202,7 @@ export default class Admin {
   public keepReportedContent = async (
     payload: { content_id: string } & Pick<ClientInterface, 'id'>
   ): Promise<ClientInterface> => {
-    const { data } = await Admin.network.put<BasicResponseInterface<ClientInterface>>(
+    const { data } = await Admin.web.network.put<BasicResponseInterface<ClientInterface>>(
       URLS.keepReportedContent(payload)
     )
 
@@ -212,7 +217,7 @@ export default class Admin {
   public deleteReportedContent = async (
     payload: { content_id: string } & Pick<ClientInterface, 'id'>
   ): Promise<ClientInterface> => {
-    const { data } = await Admin.network.delete<BasicResponseInterface<ClientInterface>>(
+    const { data } = await Admin.web.network.delete<BasicResponseInterface<ClientInterface>>(
       URLS.deleteReportedContent(payload)
     )
 
@@ -231,7 +236,7 @@ export default class Admin {
     },
     client_id: string
   ): Promise<PaginateStoreResult<StoreInterface>> => {
-    const { data } = await Admin.network.get<
+    const { data } = await Admin.web.network.get<
       BasicResponseInterface<PaginateStoreResult<StoreInterface>>
     >(URLS.getLoyalizeStores(payload, client_id))
 
@@ -243,7 +248,7 @@ export default class Admin {
    * @returns {Promise<any>} returns ranked entries
    */
   public rankedEntries = async (): Promise<any> => {
-    const { data } = await Admin.network.get<any>(URLS.getRankedEntries)
+    const { data } = await Admin.web.network.get<any>(URLS.getRankedEntries)
 
     return data.payload
   }
@@ -264,7 +269,7 @@ export default class Admin {
 
     const formData = createFormDataFromPayload(restParams)
 
-    const { data } = await Admin.network.put<any>(
+    const { data } = await Admin.web.network.put<any>(
       URLS.updateSubscriptionConfig(client_id),
       formData,
       {
@@ -285,7 +290,7 @@ export default class Admin {
    * @returns {Promise<ClientInterface>} gets client info
    */
   public client = async (id: string): Promise<ClientInterface> => {
-    const { data } = await Admin.network.get<BasicResponseInterface<ClientInterface>>(
+    const { data } = await Admin.web.network.get<BasicResponseInterface<ClientInterface>>(
       URLS.getClient(id)
     )
 
@@ -302,7 +307,7 @@ export default class Admin {
     raffle_id: string,
     client_id: string
   ): Promise<PaginateResult<ParticipantList>> => {
-    const { data } = await Admin.network.get<
+    const { data } = await Admin.web.network.get<
       BasicResponseInterface<PaginateResult<ParticipantList>>
     >(URLS.getRaffleParticipants(payload, raffle_id, client_id))
 
@@ -315,7 +320,7 @@ export default class Admin {
    * @returns {Promise<boolean>} exports client users
    */
   public exportClientUsers = async (client_id: string): Promise<boolean> => {
-    const response = await Admin.network.get<any>(URLS.exportClientUsers(client_id), {
+    const response = await Admin.web.network.get<any>(URLS.exportClientUsers(client_id), {
       responseType: 'blob'
     })
 
@@ -342,9 +347,9 @@ export default class Admin {
     payload: PaginateParams,
     client_id: string
   ): Promise<PaginateResult<UserInterface>> => {
-    const { data } = await Admin.network.get<BasicResponseInterface<PaginateResult<UserInterface>>>(
-      URLS.getClientUsers(payload, client_id)
-    )
+    const { data } = await Admin.web.network.get<
+      BasicResponseInterface<PaginateResult<UserInterface>>
+    >(URLS.getClientUsers(payload, client_id))
 
     return data.payload
   }
@@ -358,7 +363,7 @@ export default class Admin {
     const { id, ...restParams } = payload
 
     const formData = createFormDataFromPayload(restParams)
-    const { data } = await Admin.network.put<BasicResponseInterface<ClientInterface>>(
+    const { data } = await Admin.web.network.put<BasicResponseInterface<ClientInterface>>(
       URLS.updateClient(id as string),
       formData,
       {
@@ -383,7 +388,7 @@ export default class Admin {
     // const params = omit(restParams, ["id", "participants"]);
 
     const formData = createFormDataFromPayload(restParams)
-    const { data } = await Admin.network.post<BasicResponseInterface<RaffleInterface>>(
+    const { data } = await Admin.web.network.post<BasicResponseInterface<RaffleInterface>>(
       URLS.createRaffle(client_id),
       formData,
       {
@@ -407,7 +412,7 @@ export default class Admin {
     // const payload = omit(restParams, ["participants"]);
 
     const formData = createFormDataFromPayload(restParams)
-    const { data } = await Admin.network.put<BasicResponseInterface<RaffleInterface>>(
+    const { data } = await Admin.web.network.put<BasicResponseInterface<RaffleInterface>>(
       URLS.updateRaffle(id),
       formData,
       {
@@ -426,7 +431,7 @@ export default class Admin {
    * @returns {Promise<RaffleInterface>} deletes a raffle
    */
   public deleteRaffle = async (payload: RaffleParamInterface): Promise<RaffleInterface> => {
-    const { data } = await Admin.network.delete<BasicResponseInterface<RaffleInterface>>(
+    const { data } = await Admin.web.network.delete<BasicResponseInterface<RaffleInterface>>(
       URLS.deleteRaffle(payload)
     )
 
@@ -438,7 +443,7 @@ export default class Admin {
    * @returns {Promise<CreateShop>} deletes a shop
    */
   public removeShop = async (payload: { id: string; shop_id: string }): Promise<CreateShop> => {
-    const { data } = await Admin.network.delete<BasicResponseInterface<CreateShop>>(
+    const { data } = await Admin.web.network.delete<BasicResponseInterface<CreateShop>>(
       URLS.removeShop(payload)
     )
 
@@ -464,7 +469,7 @@ export default class Admin {
     // ])
 
     const formData = createFormDataFromPayload(restParams)
-    const { data } = await Admin.network.post<BasicResponseInterface<CreateShop>>(
+    const { data } = await Admin.web.network.post<BasicResponseInterface<CreateShop>>(
       URLS.addShop(client_id as string),
       formData,
       {
@@ -495,7 +500,7 @@ export default class Admin {
     // ]);
 
     const formData = createFormDataFromPayload(restParams)
-    const { data } = await Admin.network.put<BasicResponseInterface<CreateShop>>(
+    const { data } = await Admin.web.network.put<BasicResponseInterface<CreateShop>>(
       URLS.updateShop(payload),
       formData,
       {
@@ -516,7 +521,7 @@ export default class Admin {
     client_id,
     fan_points
   }: Pick<ClientInterface, 'client_id' | 'fan_points'>): Promise<ClientInterface> => {
-    const { data } = await Admin.network.put<BasicResponseInterface<ClientInterface>>(
+    const { data } = await Admin.web.network.put<BasicResponseInterface<ClientInterface>>(
       URLS.updateFanPoints(client_id),
       { fan_points }
     )
@@ -529,12 +534,12 @@ export default class Admin {
    * @param {ClientConfiguration['credentials'] & Pick<ClientInterface, 'client_id'>} payload
    * @returns {Promise<ClientInterface>} updates credentials
    */
-  public updateCredenntials = async (
+  public updateCredentials = async (
     payload: ClientConfiguration['credentials'] & Pick<ClientInterface, 'client_id'>
   ): Promise<ClientInterface> => {
     const { client_id, ...credentials } = payload
-    const { data } = await Admin.network.put<BasicResponseInterface<ClientInterface>>(
-      URLS.updateCredenntials(client_id),
+    const { data } = await Admin.web.network.put<BasicResponseInterface<ClientInterface>>(
+      URLS.updateCredentials(client_id),
       { credentials }
     )
 
@@ -550,7 +555,7 @@ export default class Admin {
     payload: HandleInterface & Pick<ClientInterface, 'id'>
   ): Promise<ClientInterface> => {
     const { id, ...restParams } = payload
-    const { data } = await Admin.network.put<BasicResponseInterface<ClientInterface>>(
+    const { data } = await Admin.web.network.put<BasicResponseInterface<ClientInterface>>(
       URLS.updatePendingSocial(id),
       restParams
     )

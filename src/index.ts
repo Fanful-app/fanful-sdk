@@ -1,4 +1,5 @@
 import { AxiosInstance } from 'axios'
+import { SupabaseClient } from '@supabase/supabase-js'
 import { Country as CountryList } from 'country-state-city'
 
 import User from './user'
@@ -14,7 +15,7 @@ import Notification from './notification'
 import SessionManager from './helper/session'
 import { StorageType } from './helper/storage'
 import { createNetwork } from './helper/network'
-import { FanfulSdkOptions, CountryInterface } from '../types/index'
+import { FanfulSdkOptions, CountryInterface } from '../types'
 
 export default class FanfulSdk {
   public user: User
@@ -27,19 +28,22 @@ export default class FanfulSdk {
   public reward: Reward
   public comment: Comment
   public notification: Notification
-  private static network: AxiosInstance
+  private static web: {
+    network: AxiosInstance
+    supabase: SupabaseClient<any, 'public', any>
+  }
 
   constructor(options?: { storage: StorageType }) {
-    this.post = new Post(FanfulSdk.network)
-    this.auth = new Auth(FanfulSdk.network)
-    this.user = new User(FanfulSdk.network)
-    this.shops = new Shop(FanfulSdk.network)
-    this.admin = new Admin(FanfulSdk.network)
-    this.raffle = new Raffle(FanfulSdk.network)
-    this.thread = new Thread(FanfulSdk.network)
-    this.reward = new Reward(FanfulSdk.network)
-    this.comment = new Comment(FanfulSdk.network)
-    this.notification = new Notification(FanfulSdk.network)
+    this.post = new Post(FanfulSdk.web)
+    this.auth = new Auth(FanfulSdk.web)
+    this.user = new User(FanfulSdk.web)
+    this.shops = new Shop(FanfulSdk.web)
+    this.admin = new Admin(FanfulSdk.web)
+    this.raffle = new Raffle(FanfulSdk.web)
+    this.thread = new Thread(FanfulSdk.web)
+    this.reward = new Reward(FanfulSdk.web)
+    this.comment = new Comment(FanfulSdk.web)
+    this.notification = new Notification(FanfulSdk.web)
     SessionManager.init(options?.storage)
   }
 
@@ -48,7 +52,7 @@ export default class FanfulSdk {
       throw new Error('client_id or secrete_key is needed to use SDK')
     }
 
-    FanfulSdk.network = createNetwork(options)
+    FanfulSdk.web = createNetwork(options)
   }
 
   /**

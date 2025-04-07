@@ -56,6 +56,7 @@ export type RecursivePartial<T> = {
 
 export type FanfulSdkOptions = {
   client_id: string
+  version: '1' | '2'
   secrete_key: string
   mode?: 'test' | 'production'
 }
@@ -64,6 +65,4 @@ export interface PaginateParams extends Pick<PaginateResult, 'page'> {}
 
 export const DEFAULT_PAGINATION: number = 10
 
-export interface FanfulSdkConfig {
-  
-}
+export interface FanfulSdkConfig {}

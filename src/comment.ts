@@ -1,21 +1,26 @@
+import { AxiosInstance } from 'axios'
+import { SupabaseClient } from '@supabase/supabase-js'
+
+import { URLS } from './helper/urls'
 import {
-  BasicResponseInterface,
   PaginateParams,
   PaginateResult,
   RewardMetadata,
   CommentInterface,
+  ReportCommentInterface,
   CreateCommentInterface,
-  ReactOnCommentInterface,
-  ReportCommentInterface
-} from '../types/index'
-import { AxiosInstance } from 'axios'
-import { URLS } from './helper/urls'
+  BasicResponseInterface,
+  ReactOnCommentInterface
+} from '../types'
 
 export default class Comment {
-  private static network: AxiosInstance
+  private static web: {
+    network: AxiosInstance
+    supabase: SupabaseClient<any, 'public', any>
+  }
 
-  constructor(network: AxiosInstance) {
-    Comment.network = network
+  constructor(web: typeof Comment.web) {
+    Comment.web = web
   }
 
   /**
@@ -26,7 +31,7 @@ export default class Comment {
   public get = async (
     params: Pick<CommentInterface, 'post_id'> & PaginateParams
   ): Promise<PaginateResult<CommentInterface>> => {
-    const { data } = await Comment.network.get<
+    const { data } = await Comment.web.network.get<
       BasicResponseInterface<PaginateResult<CommentInterface>>
     >(URLS.getComment, { params })
 
@@ -39,7 +44,7 @@ export default class Comment {
    * @returns {Promise<CommentInterface, RewardMetadata>} Create comment for a post
    */
   public create = async ({ post_id, ...payload }: CreateCommentInterface) => {
-    const { data } = await Comment.network.post<
+    const { data } = await Comment.web.network.post<
       BasicResponseInterface<CommentInterface, RewardMetadata>
     >(URLS.createComment(post_id), payload)
 
@@ -52,7 +57,10 @@ export default class Comment {
    * @returns {Promise<any>} Report a comment
    */
   public report = async (payload: Omit<ReportCommentInterface, 'post_id'>): Promise<any> => {
-    const { data } = await Comment.network.put<BasicResponseInterface>(URLS.reportComment, payload)
+    const { data } = await Comment.web.network.put<BasicResponseInterface>(
+      URLS.reportComment,
+      payload
+    )
 
     return data.payload
   }
@@ -63,7 +71,7 @@ export default class Comment {
    * @returns {Promise<T>} Like and Unlike a comment
    */
   public delete = async (params: Pick<ReactOnCommentInterface, 'id' | 'post_id'>) => {
-    const { data } = await Comment.network.delete<BasicResponseInterface>(
+    const { data } = await Comment.web.network.delete<BasicResponseInterface>(
       URLS.deleteComment(params)
     )
 
@@ -76,7 +84,7 @@ export default class Comment {
    * @returns {Promise<RewardMetadata>} Like and Unlike a comment
    */
   public like = async (params: ReactOnCommentInterface): Promise<RewardMetadata> => {
-    const { data } = await Comment.network.put<BasicResponseInterface<RewardMetadata>>(
+    const { data } = await Comment.web.network.put<BasicResponseInterface<RewardMetadata>>(
       URLS.likeAndUnlikeComment(params)
     )
 
@@ -89,7 +97,7 @@ export default class Comment {
    * @returns {Promise<RewardMetadata>} Like and Unlike a comment
    */
   public unlike = async (params: ReactOnCommentInterface): Promise<RewardMetadata> => {
-    const { data } = await Comment.network.put<BasicResponseInterface<RewardMetadata>>(
+    const { data } = await Comment.web.network.put<BasicResponseInterface<RewardMetadata>>(
       URLS.likeAndUnlikeComment(params)
     )
 

@@ -1,16 +1,41 @@
+import { DEFAULT_PAGINATION } from './constants'
 import {
+  CreateShop,
+  PaginateParams,
   ClientInterface,
-  CreateCommentInterface,
-  ReactOnCommentInterface,
+  RaffleParamInterface,
   ReactOnPostInterface,
   BlockProfileInterface,
+  CreateCommentInterface,
+  ReactOnCommentInterface,
   FollowAndUnFollowProfileInterface,
-  ProfileFollowersOrFollowingQueryParamInterface,
-  CreateShop,
-  RaffleParamInterface,
-  PaginateParams
-} from '../../types/index'
-import { DEFAULT_PAGINATION } from './constants'
+  ProfileFollowersOrFollowingQueryParamInterface
+} from '../../types'
+
+export const AUTH_URLS = {
+  signInUser: '/auth/signin',
+  signUpUser: '/auth/signup',
+  logoutUser: '/auth/signout',
+  resendOTP: '/auth/resend-otp',
+  verifyUserOtp: '/auth/verify-otp',
+  resetPassword: '/auth/reset-password',
+  forgotPassword: '/auth/forgot-password',
+  refreshAccessToken: '/auth/refresh-token'
+}
+
+export const SHOP_URLS = {}
+
+export const POST_URLS = {}
+
+export const USER_URLS = {}
+
+export const REWARD_URLS = {}
+
+export const RAFFLE_URLS = {}
+
+export const COMMENT_URLS = {}
+
+export const NOTIFICATION_URLS = {}
 
 export const URLS = {
   getPosts: '/posts',
@@ -56,15 +81,7 @@ export const URLS = {
   rewardOnTimeSpent: '/rewards/time-spent',
   rewardOnShopping: '/rewards/shop-reward',
   rewardOnLiveChat: '/rewards/live-chat',
-  signInUser: '/auth/signin',
-  signUpUser: '/auth/signup',
-  verifyUserOtp: '/auth/verify-otp',
   updateProfile: '/account',
-  forgotPassword: '/auth/forgot-password',
-  resendOTP: '/auth/resend-otp',
-  resetPassword: '/auth/reset-password',
-  refreshAccessToken: '/auth/refresh-token',
-  logoutUser: '/auth/signout',
   deleteUser: '/account',
   likeAndUnlikeThread: (params: ReactOnCommentInterface) =>
     `/threads/${params.id}/${params.has_liked ? 'like' : 'unlike'}`,
@@ -117,6 +134,14 @@ export const URLS = {
   addShop: (client_id: string) => `/clients/shops?client_id=${client_id}`,
   updateShop: (payload: CreateShop) => `/clients/shops?shop_id=${payload.id}`,
   updateFanPoints: (client_id: string) => `/clients/fan-point?client_id=${client_id}`,
-  updateCredenntials: (client_id: string) => `/clients/credentials?client_id=${client_id}`,
-  updatePendingSocial: (id: string) => `/clients/pending-social?client_id=${id}`
+  updateCredentials: (client_id: string) => `/clients/credentials?client_id=${client_id}`,
+  updatePendingSocial: (id: string) => `/clients/pending-social?client_id=${id}`,
+  ...AUTH_URLS,
+  ...SHOP_URLS,
+  ...POST_URLS,
+  ...USER_URLS,
+  ...REWARD_URLS,
+  ...RAFFLE_URLS,
+  ...COMMENT_URLS,
+  ...NOTIFICATION_URLS
 }
