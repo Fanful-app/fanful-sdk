@@ -1,13 +1,23 @@
-import { BasicResponseInterface, PaginateParams, PaginateResult } from '@typings/global'
-import { RaffleEntryInterface, RaffleFilterInterface } from '@typings/reward'
 import { AxiosInstance } from 'axios'
+import { SupabaseClient } from '@supabase/supabase-js'
+
 import { URLS } from './helper/urls'
+import {
+  PaginateParams,
+  PaginateResult,
+  RaffleEntryInterface,
+  RaffleFilterInterface,
+  BasicResponseInterface
+} from '../types'
 
 export default class Raffle {
-  private static network: AxiosInstance
+  private static web: {
+    network: AxiosInstance
+    supabase: SupabaseClient<any, 'public', any>
+  }
 
-  constructor(network: AxiosInstance) {
-    Raffle.network = network
+  constructor(web: typeof Raffle.web) {
+    Raffle.web = web
   }
 
   /**
@@ -20,7 +30,7 @@ export default class Raffle {
     filter_type,
     ...params
   }: PaginateParams & RaffleFilterInterface): Promise<PaginateResult<RaffleEntryInterface>> => {
-    const { data } = await Raffle.network.get<
+    const { data } = await Raffle.web.network.get<
       BasicResponseInterface<PaginateResult<RaffleEntryInterface>>
     >(URLS.getRaffles(filter_type), { params })
 
@@ -33,7 +43,7 @@ export default class Raffle {
    * @returns {Promise<RaffleEntryInterface>} Join a Raffle
    */
   public join = async (raffleId: string): Promise<RaffleEntryInterface> => {
-    const { data } = await Raffle.network.post<BasicResponseInterface<RaffleEntryInterface>>(
+    const { data } = await Raffle.web.network.post<BasicResponseInterface<RaffleEntryInterface>>(
       URLS.joinRaffle(raffleId)
     )
 
@@ -46,7 +56,7 @@ export default class Raffle {
    * @returns {Promise<T>} Win a raffle
    */
   public won = async (params: { raffleId: string; email_address: string }) => {
-    const { data } = await Raffle.network.post<BasicResponseInterface>(
+    const { data } = await Raffle.web.network.post<BasicResponseInterface>(
       URLS.wonRaffle(params.raffleId),
       { email_address: params.email_address }
     )

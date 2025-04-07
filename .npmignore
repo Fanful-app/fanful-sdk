@@ -1,0 +1,22 @@
+# Ignore everything by default
+*
+
+# Allow specific files and directories
+!/dist/          # Include the dist folder
+!/types/       # Include the typings folder
+!/README.md      # Include README
+!/LICENSE        # Include LICENSE
+!/package.json   # Include package.json
+# !/src/       # Include the typings folder
+
+# Explicitly ignore development-specific files and folders
+/src/            # Exclude the src folder
+/node_modules/   # Exclude node_modules
+/.git/           # Exclude Git metadata
+/.vscode/        # Exclude VS Code settings
+/.idea/          # Exclude IntelliJ IDEA settings
+/test/           # Exclude test files
+/tests/          # Exclude test files
+/tsconfig.json   # Exclude TypeScript config
+/rollup.config.js # Exclude Rollup config
+/fanful-sdk-v0.0.14-development-alpha.tgz

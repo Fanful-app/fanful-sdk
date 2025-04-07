@@ -107,3 +107,4 @@ jspm_packages/
 # Visual Studio Code
 .vscode/
 
+/fanful-sdk-v0.0.14-development-alpha.tgz

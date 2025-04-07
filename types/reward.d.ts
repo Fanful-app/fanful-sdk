@@ -66,3 +66,65 @@ export interface RaffleEntryInterface extends RaffleInterface {
   no_of_entries: number
   status: RaffleEntryStatusType
 }
+
+export interface FanPointsInterface {
+  chat: {
+    value: number
+    daily_cap: number
+  }
+  open_app?: {
+    value: number
+    daily_cap: number
+  }
+  cheer: {
+    value: number
+    daily_cap: number
+  }
+  refer: {
+    value: number
+    daily_cap: number
+  }
+  engage: {
+    value: number
+    daily_cap: number
+  }
+  create: {
+    value: number
+    daily_cap: number
+  }
+  welcome: {
+    value: number
+    daily_cap: number
+  }
+  connect: {
+    value: number
+    daily_cap: number
+  }
+  express: {
+    value: number
+    daily_cap: number
+  }
+  practice: {
+    value: number
+    daily_cap: number
+  }
+  influence: {
+    value: number
+    daily_cap: number
+  }
+}
+
+export type ParticipantList = {
+  status: string
+  username: string
+  first_name: string
+  phone_number: string
+  email_address: string
+  no_of_entries: string
+}
+
+export interface RaffleParamInterface
+  extends PaginateParams,
+    Pick<RaffleInterface, 'id' | 'status'> {
+  client_id: string
+}

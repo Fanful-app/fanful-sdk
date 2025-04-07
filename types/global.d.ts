@@ -1,5 +1,9 @@
 import MockAdapter from 'axios-mock-adapter'
 
+declare global {
+  var mock: MockAdapter
+}
+
 export interface BasicResponseInterface<T = null, M = null> {
   payload: T
   metadata: M
@@ -28,19 +32,33 @@ export interface PaginateResult<T = any> {
   [customLabel: string]: T[] | number | boolean | null | undefined
 }
 
+export interface PaginateStoreResult<T = StoreInterface> {
+  content: T[]
+  pageable: Pageable
+  last: boolean
+  totalPages: number
+  totalElements: number
+  size: number
+  number: number
+  sort: {
+    empty: boolean
+    sorted: boolean
+    unsorted: boolean
+  }
+  first: boolean
+  numberOfElements: number
+  empty: boolean
+}
+
 export type RecursivePartial<T> = {
   [P in keyof T]?: RecursivePartial<T[P]>
 }
 
 export type FanfulSdkOptions = {
   client_id: string
-  jwt_token?: string
-  secret_key?: string
+  version: '1' | '2'
+  secrete_key: string
   mode?: 'test' | 'production'
 }
 
 export interface PaginateParams extends Pick<PaginateResult, 'page'> {}
-
-declare global {
-  var mock: MockAdapter
-}

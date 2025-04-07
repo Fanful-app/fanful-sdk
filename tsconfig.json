@@ -6,15 +6,19 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "strict": true,
+    "rootDir": "./src",
+    "declaration": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "typeRoots": ["./node_modules/@types", "typings"],
     "paths": {
       "@app/*": ["src/*"],
-      "@typings/*": ["typings/*"],
-      "axios": ["node_modules/axios/index.d.ts"]
+      "@typings": ["./types", "../types"],
+      "@typings/*": ["./types/*", "../types/*"]
     }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "typings/types.d.ts"],
   "exclude": ["node_modules", "dist"],
   "ts-node": {
     "require": ["tsconfig-paths/register"]
@@ -28,6 +32,11 @@
       },
       "otherReplacer": {
         "enabled": true
+      },
+      "typingsReplacer": {
+        "enabled": true,
+        "alias": "@typings",
+        "path": "./types"
       }
     },
     "fileExtensions": {

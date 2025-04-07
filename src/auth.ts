@@ -1,6 +1,8 @@
 import { AxiosInstance } from 'axios'
+import { SupabaseClient } from '@supabase/supabase-js'
+
 import { URLS } from './helper/urls'
-import { BasicResponseInterface } from '@typings/global'
+import SessionManager from './helper/session'
 import {
   UserInterface,
   SignInUserInterface,
@@ -8,14 +10,18 @@ import {
   UserSessionInterface,
   VerifyUserOtpInterface,
   ResetPasswordInterface,
-  ForgotPasswordInterface
-} from '@typings/user'
+  ForgotPasswordInterface,
+  BasicResponseInterface
+} from '../types'
 
 export default class Auth {
-  private static network: AxiosInstance
+  private static web: {
+    network: AxiosInstance
+    supabase: SupabaseClient<any, 'public', any>
+  }
 
-  constructor(network: AxiosInstance) {
-    Auth.network = network
+  constructor(web: typeof Auth.web) {
+    Auth.web = web
   }
 
   /**
@@ -24,10 +30,13 @@ export default class Auth {
    * @returns {Promise<UserSessionInterface>} Sign in a user
    */
   public signIn = async (payload: SignInUserInterface): Promise<UserSessionInterface> => {
-    const { data } = await Auth.network.post<BasicResponseInterface<UserSessionInterface>>(
+    const { data } = await Auth.web.network.post<BasicResponseInterface<UserSessionInterface>>(
       URLS.signInUser,
       payload
     )
+
+    // Store the access token
+    await SessionManager.setSession(data.payload)
 
     return data.payload
   }
@@ -38,7 +47,7 @@ export default class Auth {
    * @returns {Promise<UserSessionInterface>} Signup a user
    */
   public signUp = async (payload: SignUpUserInterface): Promise<UserSessionInterface> => {
-    const { data } = await Auth.network.post<BasicResponseInterface<UserSessionInterface>>(
+    const { data } = await Auth.web.network.post<BasicResponseInterface<UserSessionInterface>>(
       URLS.signUpUser,
       payload
     )
@@ -52,10 +61,13 @@ export default class Auth {
    * @returns {Promise<UserSessionInterface>} Verify a user OTP
    */
   public verifyOtp = async (payload: VerifyUserOtpInterface): Promise<UserSessionInterface> => {
-    const { data } = await Auth.network.post<BasicResponseInterface<UserSessionInterface>>(
+    const { data } = await Auth.web.network.post<BasicResponseInterface<UserSessionInterface>>(
       URLS.verifyUserOtp,
       payload
     )
+
+    // Store the access token
+    await SessionManager.setSession(data.payload)
 
     return data.payload
   }
@@ -66,7 +78,7 @@ export default class Auth {
    * @returns {Promise<UserInterface>} Resend OTP for a user
    */
   public resendOTP = async (payload: SignInUserInterface): Promise<UserInterface> => {
-    const { data } = await Auth.network.post<BasicResponseInterface<UserInterface>>(
+    const { data } = await Auth.web.network.post<BasicResponseInterface<UserInterface>>(
       URLS.resendOTP,
       payload
     )
@@ -80,7 +92,7 @@ export default class Auth {
    * @returns {Promise<UserInterface>} Request for Forgot Password
    */
   public forgotPassword = async (payload: ForgotPasswordInterface): Promise<UserInterface> => {
-    const { data } = await Auth.network.post<BasicResponseInterface<UserInterface>>(
+    const { data } = await Auth.web.network.post<BasicResponseInterface<UserInterface>>(
       URLS.forgotPassword,
       payload
     )
@@ -93,7 +105,7 @@ export default class Auth {
    * @returns {Promise<T>} Logs out a user
    */
   public logout = async () => {
-    const { data } = await Auth.network.post<BasicResponseInterface>(URLS.logoutUser)
+    const { data } = await Auth.web.network.post<BasicResponseInterface>(URLS.logoutUser)
 
     return data.payload
   }
@@ -106,7 +118,7 @@ export default class Auth {
   public refreshAccessToken = async (
     payload: Pick<UserSessionInterface, 'refresh_token'>
   ): Promise<UserSessionInterface> => {
-    const { data } = await Auth.network.post<BasicResponseInterface<UserSessionInterface>>(
+    const { data } = await Auth.web.network.post<BasicResponseInterface<UserSessionInterface>>(
       URLS.refreshAccessToken,
       payload
     )
@@ -122,7 +134,7 @@ export default class Auth {
   public resetPassword = async (
     payload: Omit<ResetPasswordInterface, 'confirm_password'>
   ): Promise<UserInterface> => {
-    const { data } = await Auth.network.post<BasicResponseInterface<UserInterface>>(
+    const { data } = await Auth.web.network.post<BasicResponseInterface<UserInterface>>(
       URLS.resetPassword,
       payload
     )

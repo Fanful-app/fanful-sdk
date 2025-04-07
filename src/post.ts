@@ -1,24 +1,27 @@
+import { AxiosInstance } from 'axios'
+import { SupabaseClient } from '@supabase/supabase-js'
+
+import { URLS } from './helper/urls'
 import {
-  BasicResponseInterface,
+  PostInterface,
   PaginateParams,
   PaginateResult,
-  RewardMetadata
-} from '@typings/global'
-import {
+  RewardMetadata,
+  ReportInterface,
   CreatePostInterface,
   PostFilterInterface,
-  PostInterface,
-  ReactOnPostInterface
-} from '@typings/post'
-import { AxiosInstance } from 'axios'
-import { URLS } from './helper/urls'
-import { ReportInterface } from '@typings/user'
+  ReactOnPostInterface,
+  BasicResponseInterface
+} from '../types'
 
 export default class Post {
-  private static network: AxiosInstance
+  private static web: {
+    network: AxiosInstance
+    supabase: SupabaseClient<any, 'public', any>
+  }
 
-  constructor(network: AxiosInstance) {
-    Post.network = network
+  constructor(web: typeof Post.web) {
+    Post.web = web
   }
 
   /**
@@ -29,10 +32,9 @@ export default class Post {
   public getAll = async (
     params: PaginateParams & PostFilterInterface
   ): Promise<PaginateResult<PostInterface>> => {
-    const { data } = await Post.network.get<BasicResponseInterface<PaginateResult<PostInterface>>>(
-      URLS.getPosts,
-      { params }
-    )
+    const { data } = await Post.web.network.get<
+      BasicResponseInterface<PaginateResult<PostInterface>>
+    >(URLS.getPosts, { params })
 
     return data.payload
   }
@@ -43,7 +45,7 @@ export default class Post {
    * @returns {Promise<PostInterface>} Returns the post that matches the id passed
    */
   public get = async (post_id: string): Promise<PostInterface> => {
-    const { data } = await Post.network.get<BasicResponseInterface<PostInterface>>(
+    const { data } = await Post.web.network.get<BasicResponseInterface<PostInterface>>(
       URLS.getPost(post_id)
     )
 
@@ -53,9 +55,11 @@ export default class Post {
   /**
    * @method create
    * @param {CreatePostInterface} payload
-   * @returns {Promise<PostInterface, RewardMetadata>} Create a Post
+   * @returns {Promise<{ metadata: RewardMetadata; payload: PostInterface }>} Create a Post
    */
-  public create = async (payload: CreatePostInterface) => {
+  public create = async (
+    payload: CreatePostInterface
+  ): Promise<{ metadata: RewardMetadata; payload: PostInterface }> => {
     const form = new FormData()
     form.append('caption', payload.caption)
     form.append('media_type', payload.media_type)
@@ -69,10 +73,9 @@ export default class Post {
       })
     })
 
-    const { data } = await Post.network.post<BasicResponseInterface<PostInterface, RewardMetadata>>(
-      URLS.createPost,
-      form
-    )
+    const { data } = await Post.web.network.post<
+      BasicResponseInterface<PostInterface, RewardMetadata>
+    >(URLS.createPost, form)
 
     return { metadata: data.metadata, payload: data.payload }
   }
@@ -83,7 +86,7 @@ export default class Post {
    * @returns {Promise<RewardMetadata>} Like and Unlike a Post
    */
   public like = async (payload: ReactOnPostInterface): Promise<RewardMetadata> => {
-    const { data } = await Post.network.put<BasicResponseInterface<RewardMetadata>>(
+    const { data } = await Post.web.network.put<BasicResponseInterface<RewardMetadata>>(
       URLS.likeAndUnlikePost(payload)
     )
 
@@ -96,7 +99,7 @@ export default class Post {
    * @returns {Promise<RewardMetadata>} Like and Unlike a Post
    */
   public unlike = async (payload: ReactOnPostInterface): Promise<RewardMetadata> => {
-    const { data } = await Post.network.put<BasicResponseInterface<RewardMetadata>>(
+    const { data } = await Post.web.network.put<BasicResponseInterface<RewardMetadata>>(
       URLS.likeAndUnlikePost(payload)
     )
 
@@ -106,10 +109,10 @@ export default class Post {
   /**
    * @method report
    * @param {ReportInterface} payload
-   * @returns {Promise<T>} Report a Post
+   * @returns {Promise<null>} Report a Post
    */
-  public report = async (payload: ReportInterface) => {
-    const { data } = await Post.network.post<BasicResponseInterface>(URLS.reportPost, {
+  public report = async (payload: ReportInterface): Promise<null> => {
+    const { data } = await Post.web.network.post<BasicResponseInterface>(URLS.reportPost, {
       post_id: payload.id,
       reason: payload.reason
     })
@@ -120,10 +123,10 @@ export default class Post {
   /**
    * @method delete
    * @param {Pick<ReactOnPostInterface, 'id'>} payload
-   * @returns {Promise<T>} Delete a Post
+   * @returns {Promise<null>} Delete a Post
    */
-  public delete = async (payload: Pick<ReactOnPostInterface, 'id'>) => {
-    const { data } = await Post.network.delete<BasicResponseInterface>(URLS.deletePost(payload))
+  public delete = async (payload: Pick<ReactOnPostInterface, 'id'>): Promise<null> => {
+    const { data } = await Post.web.network.delete<BasicResponseInterface>(URLS.deletePost(payload))
 
     return data.payload
   }

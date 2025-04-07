@@ -1,13 +1,17 @@
-import { BasicResponseInterface } from '@typings/global'
-import { ShopInterface, ShopResponse } from '@typings/shop'
 import { AxiosInstance } from 'axios'
+import { SupabaseClient } from '@supabase/supabase-js'
+
 import { URLS } from './helper/urls'
+import { ShopInterface, ShopResponse, BasicResponseInterface } from '../types'
 
 export default class Shop {
-  private static network: AxiosInstance
+  private static web: {
+    network: AxiosInstance
+    supabase: SupabaseClient<any, 'public', any>
+  }
 
-  constructor(network: AxiosInstance) {
-    Shop.network = network
+  constructor(web: typeof Shop.web) {
+    Shop.web = web
   }
 
   /**
@@ -15,7 +19,9 @@ export default class Shop {
    * @returns {Promise<ShopInterface>} Returns a list of shops
    */
   public get = async (): Promise<ShopInterface> => {
-    const { data } = await Shop.network.get<BasicResponseInterface<ShopInterface>>(URLS.getShops)
+    const { data } = await Shop.web.network.get<BasicResponseInterface<ShopInterface>>(
+      URLS.getShops
+    )
 
     return data.payload
   }
@@ -29,7 +35,7 @@ export default class Shop {
     search,
     ...params
   }: Partial<Omit<ShopResponse, 'content'>> & { search: string }): Promise<ShopResponse> => {
-    const { data } = await Shop.network.get<ShopResponse>(URLS.searchShops(search), {
+    const { data } = await Shop.web.network.get<ShopResponse>(URLS.searchShops(search), {
       params
     })
 

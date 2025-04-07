@@ -1,64 +1,70 @@
 import { AxiosInstance } from 'axios'
+import { SupabaseClient } from '@supabase/supabase-js'
+import { Country as CountryList } from 'country-state-city'
 
 import User from './user'
 import Auth from './auth'
+import Shop from './shop'
 import Post from './post'
+import Admin from './admin'
 import Raffle from './raffle'
 import Thread from './thread'
 import Reward from './reward'
 import Comment from './comment'
-import { URLS } from '@app/helper/urls'
-import { Country } from '@typings/user'
 import Notification from './notification'
-import { createNetwork } from '@app/helper/network'
-import { FanfulSdkOptions, BasicResponseInterface } from '@typings/global'
+import SessionManager from './helper/session'
+import { StorageType } from './helper/storage'
+import { createNetwork } from './helper/network'
+import { FanfulSdkOptions, CountryInterface } from '../types'
 
 export default class FanfulSdk {
   public user: User
   public auth: Auth
   public post: Post
+  public shops: Shop
+  public admin: Admin
   public raffle: Raffle
   public thread: Thread
   public reward: Reward
   public comment: Comment
   public notification: Notification
-  private static network: AxiosInstance
+  private static web: {
+    network: AxiosInstance
+    supabase: SupabaseClient<any, 'public', any>
+  }
 
-  constructor(options: FanfulSdkOptions) {
-    if (options.client_id) {
-      throw new Error('client_id is needed to use SDK')
+  constructor(options?: { storage: StorageType }) {
+    this.post = new Post(FanfulSdk.web)
+    this.auth = new Auth(FanfulSdk.web)
+    this.user = new User(FanfulSdk.web)
+    this.shops = new Shop(FanfulSdk.web)
+    this.admin = new Admin(FanfulSdk.web)
+    this.raffle = new Raffle(FanfulSdk.web)
+    this.thread = new Thread(FanfulSdk.web)
+    this.reward = new Reward(FanfulSdk.web)
+    this.comment = new Comment(FanfulSdk.web)
+    this.notification = new Notification(FanfulSdk.web)
+    SessionManager.init(options?.storage)
+  }
+
+  public init(options: FanfulSdkOptions) {
+    if (options.client_id || options.secrete_key) {
+      throw new Error('client_id or secrete_key is needed to use SDK')
     }
 
-    const instance = createNetwork(options)
-
-    FanfulSdk.network = instance
-    this.user = new User(instance)
-    this.auth = new Auth(instance)
-    this.post = new Post(instance)
-    this.raffle = new Raffle(instance)
-    this.thread = new Thread(instance)
-    this.reward = new Reward(instance)
-    this.comment = new Comment(instance)
-    this.notification = new Notification(instance)
+    FanfulSdk.web = createNetwork(options)
   }
 
   /**
    * @method getCountries
-   * @returns {Promise<Country[]>} Returns the list of countries
+   * @returns {Country[]} Returns the list of countries
    */
-  public getCountries = async (): Promise<Country[]> => {
-    const { data } = await FanfulSdk.network.get<BasicResponseInterface<Country[]>>(
-      URLS.getCountries
-    )
-
-    return data.payload
-  }
-
-  /**
-   * @method setJwtToken
-   * @returns {void} Sets the jwt_token for the SDK
-   */
-  public setJwtToken = async (jwt_token: string): Promise<void> => {
-    FanfulSdk.network.defaults.headers.common['Authorization'] = jwt_token
+  public getCountries = (): CountryInterface[] => {
+    return CountryList.getAllCountries().map((country) => ({
+      name: country.name,
+      cca2: country.isoCode,
+      dial_code: country.phonecode,
+      flag: `https://flagcdn.com/w320/${country.isoCode.toLowerCase()}.png`
+    }))
   }
 }

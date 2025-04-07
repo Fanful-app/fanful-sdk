@@ -1,22 +1,37 @@
 import axios, { AxiosError } from 'axios'
-import { FanfulSdkOptions } from '@typings/global'
-import { reportError } from './utils'
+import { FanfulSdkOptions } from '../../types'
+import { createClient } from '@supabase/supabase-js'
 
-const envconfig: Record<NonNullable<FanfulSdkOptions['mode']>, string> = {
-  test: 'https://fanful-app-e67ec6957e56.herokuapp.com',
-  production: 'https://fanful-app-e67ec6957e56.herokuapp.com'
-}
+import { reportError } from './utils'
+import SessionManager from './session'
+import { envconfig } from './constants'
 
 export const createNetwork = (params: FanfulSdkOptions) => {
   // Set config defaults when creating the instance
-  const network = axios.create({ baseURL: `${envconfig[params.mode || 'test']}/api/v1` })
+  const network = axios.create({
+    baseURL: `${envconfig[params.mode || 'test']}/api/v${params.version || 2}`
+  })
+
+  const supabase = createClient(
+    `${envconfig[params.mode || 'test'].SUPABASE_DB_URL}`,
+    `${envconfig[params.mode || 'test'].SUPABASE_ANON_PUB_KEY}`,
+    {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        storage: SessionManager,
+        detectSessionInUrl: false
+      }
+    }
+  )
 
   // Add a request interceptor
   network.interceptors.request.use(
     async (config) => {
-      config.headers.setAuthorization(params.jwt_token || '')
+      const session = await SessionManager.getSession()
       config.headers.set('x-fanful-client-id', params.client_id)
-      config.headers.set('x-fanful-secret-key', params.secret_key)
+      config.headers.setAuthorization(session?.access_token || '')
+      config.headers.set('x-fanful-secrete-key', params.secrete_key)
       return config
     },
     (error: AxiosError) => {
@@ -35,5 +50,5 @@ export const createNetwork = (params: FanfulSdkOptions) => {
     }
   )
 
-  return network
+  return { network, supabase }
 }

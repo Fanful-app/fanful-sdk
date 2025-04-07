@@ -1,18 +1,23 @@
+import { AxiosInstance } from 'axios'
+import { SupabaseClient } from '@supabase/supabase-js'
+
+import { URLS } from './helper/urls'
 import {
-  BasicResponseInterface,
   PaginateParams,
   PaginateResult,
-  RewardMetadata
-} from '@typings/global'
-import { AxiosInstance } from 'axios'
-import { URLS } from './helper/urls'
-import { RewardPointInterface } from '@typings/reward'
+  RewardMetadata,
+  RewardPointInterface,
+  BasicResponseInterface
+} from '../types'
 
 export default class Reward {
-  private static network: AxiosInstance
+  private static web: {
+    network: AxiosInstance
+    supabase: SupabaseClient<any, 'public', any>
+  }
 
-  constructor(network: AxiosInstance) {
-    Reward.network = network
+  constructor(web: typeof Reward.web) {
+    Reward.web = web
   }
 
   /**
@@ -21,7 +26,7 @@ export default class Reward {
    * @returns {Promise<PaginateResult<RewardPointInterface>>} Returns a list of rewards
    */
   public get = async (params: PaginateParams): Promise<PaginateResult<RewardPointInterface>> => {
-    const { data } = await Reward.network.get<
+    const { data } = await Reward.web.network.get<
       BasicResponseInterface<PaginateResult<RewardPointInterface>>
     >(URLS.getRewards, { params })
 
@@ -38,7 +43,7 @@ export default class Reward {
       continues: PaginateResult<RewardPointInterface[]>
     }>
   > => {
-    const { data } = await Reward.network.get<
+    const { data } = await Reward.web.network.get<
       BasicResponseInterface<
         PaginateResult<{
           daily: PaginateResult<RewardPointInterface[]>
@@ -55,7 +60,7 @@ export default class Reward {
    * @returns {Promise<RewardMetadata>} Reward user on daily app opening
    */
   public rewardOnDailyAppOpening = async (): Promise<RewardMetadata> => {
-    const { data } = await Reward.network.post<BasicResponseInterface<RewardMetadata>>(
+    const { data } = await Reward.web.network.post<BasicResponseInterface<RewardMetadata>>(
       URLS.rewardOnDailyAppOpening
     )
 
@@ -67,7 +72,7 @@ export default class Reward {
    * @returns {Promise<RewardMetadata>} Reward user based on Time spent
    */
   public rewardOnTimeSpent = async (): Promise<RewardMetadata> => {
-    const { data } = await Reward.network.post<BasicResponseInterface<RewardMetadata>>(
+    const { data } = await Reward.web.network.post<BasicResponseInterface<RewardMetadata>>(
       URLS.rewardOnTimeSpent
     )
 
@@ -79,7 +84,7 @@ export default class Reward {
    * @returns {Promise<RewardMetadata>} Reward user based on shopping
    */
   public rewardOnShopping = async (): Promise<RewardMetadata> => {
-    const { data } = await Reward.network.post<BasicResponseInterface<RewardMetadata>>(
+    const { data } = await Reward.web.network.post<BasicResponseInterface<RewardMetadata>>(
       URLS.rewardOnShopping
     )
 
@@ -91,7 +96,7 @@ export default class Reward {
    * @returns {Promise<RewardMetadata>} Reward user on Live chat
    */
   public rewardOnLiveChat = async (): Promise<RewardMetadata> => {
-    const { data } = await Reward.network.post<BasicResponseInterface<RewardMetadata>>(
+    const { data } = await Reward.web.network.post<BasicResponseInterface<RewardMetadata>>(
       URLS.rewardOnLiveChat
     )
 

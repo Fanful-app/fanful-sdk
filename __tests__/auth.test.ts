@@ -15,7 +15,7 @@ describe('Auth Class', () => {
   let authService: Auth
 
   beforeEach(() => {
-    authService = new Auth(axios as AxiosInstance)
+    authService = new Auth(axios)
   })
 
   afterEach(() => {

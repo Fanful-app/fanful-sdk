@@ -1,9 +1,10 @@
 import axios, { AxiosInstance } from 'axios'
 import Notification from '../src/notification'
-import { PaginateParams, PaginateResult } from '../typings/global'
+import { PaginateParams } from '../typings/global'
 import type { NotificationInterface, FcmTokenInterface } from '../typings/notification'
 import { NotificationType } from '../typings/enums'
 import { URLS } from '../src/helper/urls'
+import { createMockResponse } from '../src/helper/utils'
 
 describe('Notification Class', () => {
   let notificationService: Notification
@@ -17,30 +18,21 @@ describe('Notification Class', () => {
   })
 
   test('should fetch notifications list', async () => {
-    const mockNotifications: PaginateResult<NotificationInterface> = {
-      docs: [
-        {
-          id: '1',
-          message: 'New Comment',
-          post_id: '123',
-          is_seen: false,
-          type: NotificationType.COMMENTED,
-          created_at: Date.now(),
-          updated_at: Date.now(),
-          post: { id: '123', media_url: 'https://example.com/image.png' }
-        }
-      ],
-      total: 1,
-      limit: 10,
-      page: 1,
-      pages: 1,
-      offset: 0,
-      totalDocs: 0,
-      totalPages: 0,
-      hasPrevPage: false,
-      hasNextPage: false,
-      pagingCounter: 0
-    }
+    const mockNotificationsData: NotificationInterface[] = [
+      {
+        id: '1',
+        message: 'New Comment',
+        post_id: '123',
+        is_seen: false,
+        type: NotificationType.COMMENTED,
+        created_at: Date.now(),
+        updated_at: Date.now(),
+        post: { id: '123', media_url: 'https://example.com/image.png' }
+      }
+    ]
+
+    const mockNotifications =
+      createMockResponse<NotificationInterface>(mockNotificationsData).payload
 
     mock.onGet(URLS.getNotifications).reply(200, {
       payload: mockNotifications
@@ -48,6 +40,7 @@ describe('Notification Class', () => {
 
     const params: PaginateParams = { page: 1 }
     const notifications = await notificationService.get(params)
+
     expect(notifications).toEqual(mockNotifications)
   })
 
@@ -81,6 +74,7 @@ describe('Notification Class', () => {
       device_type: 'android',
       device_token: 'token123'
     }
+
     const mockResponse = { success: true }
 
     mock.onPost(URLS.registerPushNotification).reply(200, {
