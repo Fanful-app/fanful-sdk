@@ -2,7 +2,6 @@ import { AxiosInstance } from 'axios'
 import { SupabaseClient } from '@supabase/supabase-js'
 
 import { URLS } from './helper/urls'
-import SessionManager from './helper/session'
 import {
   UserInterface,
   SignInUserInterface,
@@ -25,20 +24,34 @@ export default class AuthV2 {
   }
 
   /**
+   * @method getUserSession
+   * @returns {Promise<UserSessionInterface>} Get user session
+   */
+  public getUserSession = async (): Promise<UserSessionInterface> => {
+    const { data } = await AuthV2.web.network.get<BasicResponseInterface<UserSessionInterface>>(
+      '/session'
+    )
+    return data.payload
+  }
+
+  /**
    * @method signIn
    * @param {SignInUserInterface} payload
    * @returns {Promise<UserSessionInterface>} Sign in a user
    */
-  public signIn = async (payload: SignInUserInterface): Promise<UserSessionInterface> => {
-    const { data } = await AuthV2.web.network.post<BasicResponseInterface<UserSessionInterface>>(
-      URLS.signInUser,
-      payload
-    )
+  public signInUser = async (payload: SignInUserInterface): Promise<UserSessionInterface> => {
+    const { error } = await AuthV2.web.supabase.auth.signInWithPassword({
+      password: payload.password!,
+      phone: payload.phone_number!
+    })
+    if (error) {
+      throw error
+    }
 
-    // Store the access token
-    await SessionManager.setSession(data.payload)
+    // Get user session from our API
+    const session = await this.getUserSession()
 
-    return data.payload
+    return session
   }
 
   /**
@@ -46,7 +59,7 @@ export default class AuthV2 {
    * @param {SignUpUserInterface} payload
    * @returns {Promise<UserSessionInterface>} Signup a user
    */
-  public signUp = async (payload: SignUpUserInterface): Promise<UserSessionInterface> => {
+  public signUpUser = async (payload: SignUpUserInterface): Promise<UserSessionInterface> => {
     const { data } = await AuthV2.web.network.post<BasicResponseInterface<UserSessionInterface>>(
       URLS.signUpUser,
       payload
@@ -56,20 +69,25 @@ export default class AuthV2 {
   }
 
   /**
-   * @method verifyOtp
+   * @method verifyUserOtp
    * @param {VerifyUserOtpInterface} payload
    * @returns {Promise<UserSessionInterface>} Verify a user OTP
    */
-  public verifyOtp = async (payload: VerifyUserOtpInterface): Promise<UserSessionInterface> => {
-    const { data } = await AuthV2.web.network.post<BasicResponseInterface<UserSessionInterface>>(
-      URLS.verifyUserOtp,
-      payload
-    )
+  public verifyUserOtp = async (payload: VerifyUserOtpInterface): Promise<UserSessionInterface> => {
+    const { error } = await AuthV2.web.supabase.auth.verifyOtp({
+      type: 'sms',
+      token: payload.token!,
+      phone: payload.phone_number!
+    })
 
-    // Store the access token
-    await SessionManager.setSession(data.payload)
+    if (error) {
+      throw error
+    }
 
-    return data.payload
+    // Get user session from our API
+    const session = await this.getUserSession()
+
+    return session
   }
 
   /**
@@ -77,13 +95,15 @@ export default class AuthV2 {
    * @param {SignInUserInterface} payload
    * @returns {Promise<UserInterface>} Resend OTP for a user
    */
-  public resendOTP = async (payload: SignInUserInterface): Promise<UserInterface> => {
-    const { data } = await AuthV2.web.network.post<BasicResponseInterface<UserInterface>>(
-      URLS.resendOTP,
-      payload
-    )
+  public resendOTP = async (payload: SignInUserInterface): Promise<void> => {
+    const { error } = await AuthV2.web.supabase.auth.resend({
+      type: 'sms',
+      phone: payload.phone_number!
+    })
 
-    return data.payload
+    if (error) {
+      throw error
+    }
   }
 
   /**
@@ -91,23 +111,27 @@ export default class AuthV2 {
    * @param {ForgotPasswordInterface} payload
    * @returns {Promise<UserInterface>} Request for Forgot Password
    */
-  public forgotPassword = async (payload: ForgotPasswordInterface): Promise<UserInterface> => {
-    const { data } = await AuthV2.web.network.post<BasicResponseInterface<UserInterface>>(
-      URLS.forgotPassword,
-      payload
-    )
+  public forgotPassword = async (payload: ForgotPasswordInterface): Promise<void> => {
+    const { error } = await AuthV2.web.supabase.auth.signInWithOtp({
+      phone: payload.phone_number!,
+      options: { channel: 'sms', shouldCreateUser: false }
+    })
 
-    return data.payload
+    if (error) {
+      throw error
+    }
   }
 
   /**
    * @method logout
-   * @returns {Promise<T>} Logs out a user
+   * @returns {Promise<void>} Logs out a user
    */
-  public logout = async () => {
-    const { data } = await AuthV2.web.network.post<BasicResponseInterface>(URLS.logoutUser)
+  public logout = async (): Promise<void> => {
+    const { error } = await AuthV2.web.supabase.auth.signOut({ scope: 'global' })
 
-    return data.payload
+    if (error) {
+      throw error
+    }
   }
 
   /**
