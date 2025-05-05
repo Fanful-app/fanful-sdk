@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter'
+import { StorageType } from '@app/helper/storage'
 
 declare global {
   var mock: MockAdapter
@@ -55,10 +56,12 @@ export type RecursivePartial<T> = {
 }
 
 export type FanfulSdkOptions = {
+  version?: 1 | 2
   client_id: string
-  version: '1' | '2'
   secrete_key: string
+  storage?: StorageType
   mode?: 'test' | 'production'
+  onClearSession?: () => void
 }
 
 export interface PaginateParams extends Pick<PaginateResult, 'page'> {}

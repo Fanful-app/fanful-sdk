@@ -1,5 +1,4 @@
 import { AxiosInstance } from 'axios'
-import { SupabaseClient } from '@supabase/supabase-js'
 
 import { URLS } from './helper/urls'
 import { createFormDataFromPayload } from './helper/utils'
@@ -27,10 +26,7 @@ import {
 } from '../types/index'
 
 export default class Admin {
-  private static web: {
-    network: AxiosInstance
-    supabase: SupabaseClient<any, 'public', any>
-  }
+  private static web: { network: AxiosInstance }
 
   constructor(web: typeof Admin.web) {
     Admin.web = web

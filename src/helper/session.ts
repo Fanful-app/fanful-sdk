@@ -45,7 +45,7 @@ class SessionManager {
     return SessionManager.setSession(session)
   }
 
-  public static async removeItem(key: string): Promise<void> {
+  public static async removeItem(key: string = SessionManager.ACCESS_TOKEN_KEY): Promise<void> {
     const driver = storage || SessionManager.driver
     return driver.removeItem(key)
   }

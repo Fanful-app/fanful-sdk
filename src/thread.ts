@@ -1,5 +1,4 @@
 import { AxiosInstance } from 'axios'
-import { SupabaseClient } from '@supabase/supabase-js'
 
 import {
   PaginateParams,
@@ -13,10 +12,7 @@ import { URLS } from './helper/urls'
 import { omit } from './helper/utils'
 
 export default class Thread {
-  private static web: {
-    network: AxiosInstance
-    supabase: SupabaseClient<any, 'public', any>
-  }
+  private static web: { network: AxiosInstance }
 
   constructor(web: typeof Thread.web) {
     Thread.web = web

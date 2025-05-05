@@ -1,5 +1,4 @@
 import { AxiosInstance } from 'axios'
-import { SupabaseClient } from '@supabase/supabase-js'
 
 import { URLS } from './helper/urls'
 import {
@@ -11,10 +10,7 @@ import {
 } from '../types'
 
 export default class Raffle {
-  private static web: {
-    network: AxiosInstance
-    supabase: SupabaseClient<any, 'public', any>
-  }
+  private static web: { network: AxiosInstance }
 
   constructor(web: typeof Raffle.web) {
     Raffle.web = web

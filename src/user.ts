@@ -1,5 +1,4 @@
 import { AxiosInstance } from 'axios'
-import { SupabaseClient } from '@supabase/supabase-js'
 
 import { URLS } from './helper/urls'
 import SessionManager from './helper/session'
@@ -22,10 +21,7 @@ import {
 } from '../types'
 
 export default class User {
-  private static web: {
-    network: AxiosInstance
-    supabase: SupabaseClient<any, 'public', any>
-  }
+  private static web: { network: AxiosInstance }
 
   constructor(web: typeof User.web) {
     User.web = web
