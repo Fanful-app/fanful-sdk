@@ -1,5 +1,3 @@
-import { AxiosInstance } from 'axios'
-import { SupabaseClient } from '@supabase/supabase-js'
 import { Country as CountryList } from 'country-state-city'
 
 import User from './user'
@@ -28,32 +26,28 @@ export default class FanfulSdk {
   public comment: Comment
   public auth: AuthV1 | AuthV2
   public notification: Notification
-  private static web: {
-    network: AxiosInstance
-    supabase?: SupabaseClient<any, 'public', any>
-  }
 
   constructor(options: FanfulSdkOptions) {
     if (options.client_id || options.secrete_key) {
       throw new Error('client_id or secrete_key is needed to use SDK')
     }
 
-    const isV2 = options?.version === 2 || 2
-    FanfulSdk.web = isV2 ? createV2Network(options) : createV1Network(options)
+    const isV2 = (options?.version || 2) === 2
+    const network: ReturnType<typeof createV1Network | typeof createV2Network> = isV2
+      ? createV2Network(options)
+      : createV1Network(options)
 
-    this.post = new Post(FanfulSdk.web)
-    this.user = new User(FanfulSdk.web)
-    this.shops = new Shop(FanfulSdk.web)
-    this.auth = new AuthV1(FanfulSdk.web)
-    this.admin = new Admin(FanfulSdk.web)
-    this.raffle = new Raffle(FanfulSdk.web)
-    this.thread = new Thread(FanfulSdk.web)
-    this.reward = new Reward(FanfulSdk.web)
-    this.comment = new Comment(FanfulSdk.web)
-    this.notification = new Notification(FanfulSdk.web)
-    this.auth = isV2
-      ? new AuthV2(FanfulSdk.web as ReturnType<typeof createV2Network>)
-      : new AuthV1(FanfulSdk.web)
+    this.post = new Post(network)
+    this.user = new User(network)
+    this.shops = new Shop(network)
+    this.auth = new AuthV1(network)
+    this.admin = new Admin(network)
+    this.raffle = new Raffle(network)
+    this.thread = new Thread(network)
+    this.reward = new Reward(network)
+    this.comment = new Comment(network)
+    this.notification = new Notification(network)
+    this.auth = isV2 ? new AuthV2(network as ReturnType<typeof createV2Network>) : this.auth
 
     SessionManager.init(options?.storage)
   }

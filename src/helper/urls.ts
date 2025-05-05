@@ -113,7 +113,6 @@ export const ADMIN_URLS = {
   updateFanPoints: (client_id: string) => `/clients/fan-point?client_id=${client_id}`,
   updateCredentials: (client_id: string) => `/clients/credentials?client_id=${client_id}`,
   exportClientUsers: (client_id: string) => `/clients/export-users?client_id=${client_id}`,
-
   updateSubscriptionConfig: (client_id: string) =>
     `/admin/subscription-config/?client_id=${client_id}`,
   deleteClient: (payload: Pick<ClientInterface, 'client_id'>) =>
