@@ -153,6 +153,7 @@ export const URLS = {
   ...SHOP_URLS,
   ...POST_URLS,
   ...USER_URLS,
+  ...ADMIN_URLS,
   ...REWARD_URLS,
   ...RAFFLE_URLS,
   ...THREAD_URLS,
