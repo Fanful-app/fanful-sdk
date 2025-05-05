@@ -29,8 +29,16 @@ yarn add fanful-sdk
 # Usage
 
 ```js
-// @TODO
 import Fanful from 'fanful-sdk'
+
+const sdk = new Fanful({
+  version: 2,
+  mode: 'test',
+  // LocalStorage -> Web Environment | AsyncStorage -> React Native Environment
+  storage: LocalStorage | AsyncStorage, // This can also be left out, the sdk will use the default storage, which is in-memory
+  secrete_key: '8WlClMqx2ZP5qFkI7/qkNQqpB65wp1FLfU',
+  client_id: 'eyJpYXQiOjE3NDQ4MTUwNjguNzAxOTM5LCJ1cmwiOiJod'
+})
 ```
 
 # Example
@@ -43,4 +51,4 @@ Please consult [CONTRIBUTING](./CONTRIBUTING.md) for guidelines on contributing 
 
 # Author
 
-**fanful-sdk-test** © [josemak25](https://github.com/josemak25), Released under the [Apache-2.0](./LICENSE) License.
+**fanful-sdk** © [josemak25](https://github.com/josemak25), Released under the [Apache-2.0](./LICENSE) License.
